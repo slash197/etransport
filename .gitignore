@@ -8,3 +8,4 @@
 /spike/
 .env
 *.code-workspace
+/playground/

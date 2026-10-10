@@ -1,0 +1,761 @@
+{
+    "valid national transport": [],
+    "valid deletion": [],
+    "valid confirmation": [],
+    "valid vehicle change": [],
+    "valid intra-community acquisition": [],
+    "valid intra-community delivery": [],
+    "valid import": [],
+    "valid export": [],
+    "valid correction": [],
+    "valid entry for storage": [],
+    "valid processing entry": [],
+    "valid with a previous notification": [],
+    "valid after a system failure": [],
+    "valid other document with remarks": [],
+    "valid partner without a tax code": [],
+    "valid organiser without a tax code": [],
+    "valid foreign organiser": [],
+    "valid partner in Greece": [],
+    "valid partner in Kosovo": [],
+    "valid value of zero": [],
+    "valid personal code as declarant": [],
+    "valid two lines of goods": [],
+    "valid two trailers": [],
+    "BT-TY-005 two messages": [
+        {
+            "rule": "BT-TY-005",
+            "location": "/eTransport",
+            "message": "O instanta eTransport TREBUIE sa aibe cel putin unul si numai unul dintre elementele notificare, confirmare, stergere sau modifVehicul."
+        }
+    ],
+    "BT-TY-005 no message": [
+        {
+            "rule": "BT-TY-005",
+            "location": "/eTransport",
+            "message": "O instanta eTransport TREBUIE sa aibe cel putin unul si numai unul dintre elementele notificare, confirmare, stergere sau modifVehicul."
+        }
+    ],
+    "BR-002 declarant code starts with zero": [
+        {
+            "rule": "BR-002",
+            "location": "/eTransport",
+            "message": "Codul de identificare fiscala(CUI, CNP, NIF) al declarantului (BT-1) TREBUIE sa aibe un format valid in Romania(RO) (codDeclarant = 0123)."
+        }
+    ],
+    "BR-002 declarant code has a country prefix": [
+        {
+            "rule": "BR-002",
+            "location": "/eTransport",
+            "message": "Codul de identificare fiscala(CUI, CNP, NIF) al declarantului (BT-1) TREBUIE sa aibe un format valid in Romania(RO) (codDeclarant = RO10000001)."
+        }
+    ],
+    "BR-201 unknown post-failure flag": [
+        {
+            "rule": "BR-201",
+            "location": "/eTransport",
+            "message": "Declarare post avarie sistem RO-eTransport poate avea doar valorea 'D' (declPostAvarie = X)."
+        }
+    ],
+    "BR-201 accepts any text containing D": [],
+    "BR-019 wrong check digits": [
+        {
+            "rule": "BR-019",
+            "location": "/eTransport/stergere/@uit",
+            "message": "Identificatorul unic al transportului (BT-3, BT-52, BT-55 sau BT-56) TREBUIE sa respecte algoritmul de verificare a cifrei de control (uit = 3V0P0L0P0T3JUW47)."
+        }
+    ],
+    "BR-019 too short": [
+        {
+            "rule": "BR-019",
+            "location": "/eTransport/stergere/@uit",
+            "message": "Identificatorul unic al transportului (BT-3, BT-52, BT-55 sau BT-56) TREBUIE sa respecte algoritmul de verificare a cifrei de control (uit = ABC)."
+        }
+    ],
+    "BR-019 lower case": [
+        {
+            "rule": "BR-019",
+            "location": "/eTransport/stergere/@uit",
+            "message": "Identificatorul unic al transportului (BT-3, BT-52, BT-55 sau BT-56) TREBUIE sa respecte algoritmul de verificare a cifrei de control (uit = 3v0p0l0p0t3juw46)."
+        }
+    ],
+    "BR-019 forbidden letters with right check digits": [],
+    "BR-019 in a correction": [
+        {
+            "rule": "BR-019",
+            "location": "/eTransport/notificare/corectie/@uit",
+            "message": "Identificatorul unic al transportului (BT-3, BT-52, BT-55 sau BT-56) TREBUIE sa respecte algoritmul de verificare a cifrei de control (uit = 3V0P0L0P0T3JUW00)."
+        }
+    ],
+    "BR-019 in a previous notification": [
+        {
+            "rule": "BR-019",
+            "location": "/eTransport/notificare/notificareAnterioara/@uit",
+            "message": "Identificatorul unic al transportului (BT-3, BT-52, BT-55 sau BT-56) TREBUIE sa respecte algoritmul de verificare a cifrei de control (uit = 4C0U0C0J0W3DDQ00)."
+        }
+    ],
+    "BR-019 in a confirmation": [
+        {
+            "rule": "BR-019",
+            "location": "/eTransport/confirmare/@uit",
+            "message": "Identificatorul unic al transportului (BT-3, BT-52, BT-55 sau BT-56) TREBUIE sa respecte algoritmul de verificare a cifrei de control (uit = 3V0P0L0P0T3JUW00)."
+        }
+    ],
+    "BR-008 empty in a deletion": [
+        {
+            "rule": "BR-008",
+            "location": "/eTransport/stergere",
+            "message": "Intr-o instanta eTransport care are unul din elementele corectie, notificareAnterioara, stergere, confirmare sau modifVehicul, Identificatorul unic al transportului TREBUIE sa existe."
+        },
+        {
+            "rule": "BR-019",
+            "location": "/eTransport/stergere/@uit",
+            "message": "Identificatorul unic al transportului (BT-3, BT-52, BT-55 sau BT-56) TREBUIE sa respecte algoritmul de verificare a cifrei de control (uit = )."
+        }
+    ],
+    "BR-008 missing in a deletion": [
+        {
+            "rule": "BR-008",
+            "location": "/eTransport/stergere",
+            "message": "Intr-o instanta eTransport care are unul din elementele corectie, notificareAnterioara, stergere, confirmare sau modifVehicul, Identificatorul unic al transportului TREBUIE sa existe."
+        }
+    ],
+    "BR-008 missing in a correction": [
+        {
+            "rule": "BR-008",
+            "location": "/eTransport/notificare/corectie",
+            "message": "Intr-o instanta eTransport care are unul din elementele corectie, notificareAnterioara, stergere, confirmare sau modifVehicul, Identificatorul unic al transportului TREBUIE sa existe."
+        }
+    ],
+    "BR-008 missing in a confirmation": [
+        {
+            "rule": "BR-008",
+            "location": "/eTransport/confirmare",
+            "message": "Intr-o instanta eTransport care are unul din elementele corectie, notificareAnterioara, stergere, confirmare sau modifVehicul, Identificatorul unic al transportului TREBUIE sa existe."
+        }
+    ],
+    "BR-008 missing in a vehicle change": [
+        {
+            "rule": "BR-008",
+            "location": "/eTransport/modifVehicul",
+            "message": "Intr-o instanta eTransport care are unul din elementele corectie, notificareAnterioara, stergere, confirmare sau modifVehicul, Identificatorul unic al transportului TREBUIE sa existe."
+        }
+    ],
+    "BR-008 blank in a previous notification": [
+        {
+            "rule": "BR-008",
+            "location": "/eTransport/notificare/notificareAnterioara",
+            "message": "Intr-o instanta eTransport care are unul din elementele corectie, notificareAnterioara, stergere, confirmare sau modifVehicul, Identificatorul unic al transportului TREBUIE sa existe."
+        },
+        {
+            "rule": "BR-019",
+            "location": "/eTransport/notificare/notificareAnterioara/@uit",
+            "message": "Identificatorul unic al transportului (BT-3, BT-52, BT-55 sau BT-56) TREBUIE sa respecte algoritmul de verificare a cifrei de control (uit = )."
+        }
+    ],
+    "BR-202 no change date": [
+        {
+            "rule": "BR-202",
+            "location": "/eTransport",
+            "message": "Intr-o instanta eTransport care are elementul modifVehicul, Data modificării vehiculului(BT-64) TREBUIE sa existe."
+        },
+        {
+            "rule": "BR-203",
+            "location": "/eTransport",
+            "message": "Data modificării vehiculului(BT-64) TREBUIE sa aibe formatul yyyy-mm-ddThh:mm:ss ( = )."
+        }
+    ],
+    "BR-203 change date without a time": [
+        {
+            "rule": "BR-203",
+            "location": "/eTransport",
+            "message": "Data modificării vehiculului(BT-64) TREBUIE sa aibe formatul yyyy-mm-ddThh:mm:ss (dataModificare = 2026-10-12)."
+        }
+    ],
+    "BR-204 no vehicle": [
+        {
+            "rule": "BR-204",
+            "location": "/eTransport",
+            "message": "Intr-o instanta eTransport care are elementul modifVehicul, Număr înmatriculare vehicul(BT-61) TREBUIE sa existe."
+        }
+    ],
+    "BR-204 blank vehicle": [
+        {
+            "rule": "BR-031",
+            "location": "/eTransport/modifVehicul/@nrVehicul",
+            "message": "Numar inmatriculare vehicul(BT-18, BT-61) TREBUIE sa aiba minim 2 caractere si maxim 20 de caractere. Sunt acceptate caractere alfabetice majuscule (A-Z) si caractere numerice(0-9)."
+        },
+        {
+            "rule": "BR-204",
+            "location": "/eTransport",
+            "message": "Intr-o instanta eTransport care are elementul modifVehicul, Număr înmatriculare vehicul(BT-61) TREBUIE sa existe."
+        }
+    ],
+    "BR-031 vehicle in a vehicle change": [
+        {
+            "rule": "BR-031",
+            "location": "/eTransport/modifVehicul/@nrVehicul",
+            "message": "Numar inmatriculare vehicul(BT-18, BT-61) TREBUIE sa aiba minim 2 caractere si maxim 20 de caractere. Sunt acceptate caractere alfabetice majuscule (A-Z) si caractere numerice(0-9)."
+        }
+    ],
+    "BR-004 acquisition from outside the EU": [
+        {
+            "rule": "BR-004",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 10, 12, 14, 20, 22, 24, 60 sau 70 (Achizitie intracomunitara, Operatiuni in sistem lohn (UE) - intrare, Stocuri la dispozitia clientului (Call-off stock) - intrare, Livrare intracomunitara, Operatiuni in sistem lohn (UE) - iesire, Stocuri la dispozitia clientului (Call-off stock) - iesire, Tranzactie intracomunitara - Intrare pentru depozitare/formare nou transport sau Tranzactie intracomunitara - Iesire dupa depozitare/formare nou transport), atunci codul tarii partenerului comercial (BT-15) TREBUIE sa apartina unei tari din UE. Codul 'RO' este EXCEPTAT (US)."
+        }
+    ],
+    "BR-004 acquisition from Romania": [
+        {
+            "rule": "BR-004",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 10, 12, 14, 20, 22, 24, 60 sau 70 (Achizitie intracomunitara, Operatiuni in sistem lohn (UE) - intrare, Stocuri la dispozitia clientului (Call-off stock) - intrare, Livrare intracomunitara, Operatiuni in sistem lohn (UE) - iesire, Stocuri la dispozitia clientului (Call-off stock) - iesire, Tranzactie intracomunitara - Intrare pentru depozitare/formare nou transport sau Tranzactie intracomunitara - Iesire dupa depozitare/formare nou transport), atunci codul tarii partenerului comercial (BT-15) TREBUIE sa apartina unei tari din UE. Codul 'RO' este EXCEPTAT (RO)."
+        }
+    ],
+    "BR-004 delivery to Romania": [
+        {
+            "rule": "BR-004",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 10, 12, 14, 20, 22, 24, 60 sau 70 (Achizitie intracomunitara, Operatiuni in sistem lohn (UE) - intrare, Stocuri la dispozitia clientului (Call-off stock) - intrare, Livrare intracomunitara, Operatiuni in sistem lohn (UE) - iesire, Stocuri la dispozitia clientului (Call-off stock) - iesire, Tranzactie intracomunitara - Intrare pentru depozitare/formare nou transport sau Tranzactie intracomunitara - Iesire dupa depozitare/formare nou transport), atunci codul tarii partenerului comercial (BT-15) TREBUIE sa apartina unei tari din UE. Codul 'RO' este EXCEPTAT (RO)."
+        }
+    ],
+    "BR-005 national transport with a foreign partner": [
+        {
+            "rule": "BR-005",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 30(Transport pe teritoriul national), atunci codul tarii partenerului comercial (BT-15) TREBUIE sa fie corespunzator Romaniei(RO) (DE)."
+        }
+    ],
+    "BR-006 import from the EU": [
+        {
+            "rule": "BR-006",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 40 sau 50(Import sau Export), atunci codul tarii partenerului comercial (BT-15) TREBUIE sa apartina unei tari din afara UE (DE)."
+        }
+    ],
+    "BR-006 export to Romania": [
+        {
+            "rule": "BR-006",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 40 sau 50(Import sau Export), atunci codul tarii partenerului comercial (BT-15) TREBUIE sa apartina unei tari din afara UE (RO)."
+        }
+    ],
+    "BR-007 partner code is not a Romanian tax code": [
+        {
+            "rule": "BR-007",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 30(Transport pe teritoriul national), atunci, daca este cunoscut, codul de identificare fiscala al partenerului comercial(BT-16) TREBUIE sa aibe un format valid in Romania(RO) sau, daca acest cod este necunoscut, valoarea 'PF'. (cod = X1)."
+        }
+    ],
+    "BR-007 partner code missing": [
+        {
+            "rule": "BR-007",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 30(Transport pe teritoriul national), atunci, daca este cunoscut, codul de identificare fiscala al partenerului comercial(BT-16) TREBUIE sa aibe un format valid in Romania(RO) sau, daca acest cod este necunoscut, valoarea 'PF'. ( = )."
+        }
+    ],
+    "BR-025 previous notification on national transport": [
+        {
+            "rule": "BR-025",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 30, 40, 50, 60 sau 70 (Transport pe teritoriul national, Import, Export, Tranzactie intracomunitara - Intrare pentru depozitare/formare nou transport sau Tranzactie intracomunitara - Iesire dupa depozitare/formare nou transport, atunci notificare aterioara (BG-8) NU TREBUIE sa existe (codTipOperatiune = 30) ."
+        }
+    ],
+    "BR-025 previous notification on import": [
+        {
+            "rule": "BR-025",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 30, 40, 50, 60 sau 70 (Transport pe teritoriul national, Import, Export, Tranzactie intracomunitara - Intrare pentru depozitare/formare nou transport sau Tranzactie intracomunitara - Iesire dupa depozitare/formare nou transport, atunci notificare aterioara (BG-8) NU TREBUIE sa existe (codTipOperatiune = 40) ."
+        }
+    ],
+    "BR-043 organiser code is not a Romanian tax code": [
+        {
+            "rule": "BR-043",
+            "location": "/eTransport/notificare/dateTransport/@codTaraOrgTransport",
+            "message": "Daca codul tarii organizator transport(BT-21) este 'RO' (Romania) si codul Tip operatiune(BT-4) este diferit de '30' (Transport pe teritoriul national), atunci Cod organizator transpor (CUI, CNP, NIF)(BT-22) TREBUIE sa aiba un format valid in Romania(RO).(codOrgTransport = ABC)."
+        }
+    ],
+    "BR-043 organiser code missing": [
+        {
+            "rule": "BR-043",
+            "location": "/eTransport/notificare/dateTransport/@codTaraOrgTransport",
+            "message": "Daca codul tarii organizator transport(BT-21) este 'RO' (Romania) si codul Tip operatiune(BT-4) este diferit de '30' (Transport pe teritoriul national), atunci Cod organizator transpor (CUI, CNP, NIF)(BT-22) TREBUIE sa aiba un format valid in Romania(RO).( = )."
+        }
+    ],
+    "BR-209 organiser code on national transport": [],
+    "BR-046 customs office on national transport": [
+        {
+            "rule": "BR-046",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 10, 20, 30, 60 sau 70 (Achizitie intracomunitara, Livrare intracomunitara, Transport pe teritoriul national, Tranzactie intracomunitara - Intrare pentru depozitare/formare nou transport sau Tranzactie intracomunitara - Iesire dupa depozitare/formare nou transport), atunci Codul biroului vamal(BT-24) NU TREBUIE sa existe (codTipOperatiune = 30) ."
+        },
+        {
+            "rule": "BR-216",
+            "location": "/eTransport/notificare/locStartTraseuRutier",
+            "message": "Daca codul operatiunii este diferit de 40(Import), atunci cod birou vamal(BT-26) din Locul de start al traseului rutier(BG-6) nu trebuie sa existe."
+        }
+    ],
+    "BR-212 border crossing at the start of national transport": [
+        {
+            "rule": "BR-212",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 20, 22, 24, 30, 50 sau 70 (Livrare intracomunitară, Operaţiuni în sistem lohn (UE) - ieşire, Stocuri la dispoziţia clientului (Call-off stock) - ieşire, Transport pe teritoriul naţional, Export sau Tranzacţie intracomunitară - Ieşire după depozitare/formare nou transport, atunci Codul punctului de trecere frontieră(BT-25), din Locul de start al traseului rutier(BG-6), NU TREBUIE sa existe (codTipOperatiune = 30) ."
+        }
+    ],
+    "BR-212 border crossing at the start of an export": [
+        {
+            "rule": "BR-212",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 20, 22, 24, 30, 50 sau 70 (Livrare intracomunitară, Operaţiuni în sistem lohn (UE) - ieşire, Stocuri la dispoziţia clientului (Call-off stock) - ieşire, Transport pe teritoriul naţional, Export sau Tranzacţie intracomunitară - Ieşire după depozitare/formare nou transport, atunci Codul punctului de trecere frontieră(BT-25), din Locul de start al traseului rutier(BG-6), NU TREBUIE sa existe (codTipOperatiune = 50) ."
+        }
+    ],
+    "BR-213 border crossing at the end of national transport": [
+        {
+            "rule": "BR-213",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 12, 14, 30, 40 sau 60 (Operatiuni in sistem lohn (UE) - intrare, Stocuri la dispozitia clientului (Call-off stock) - intrare, Transport pe teritoriul national, Import sau Tranzactie intracomunitara - Intrare pentru depozitare/formare nou transport, atunci Codul punctului de trecere frontieră(BT-37), din Locul de final al traseului rutier(BG-8), NU TREBUIE sa existe (codTipOperatiune = 30) ."
+        }
+    ],
+    "BR-213 border crossing at the end of an import": [
+        {
+            "rule": "BR-213",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 12, 14, 30, 40 sau 60 (Operatiuni in sistem lohn (UE) - intrare, Stocuri la dispozitia clientului (Call-off stock) - intrare, Transport pe teritoriul national, Import sau Tranzactie intracomunitara - Intrare pentru depozitare/formare nou transport, atunci Codul punctului de trecere frontieră(BT-37), din Locul de final al traseului rutier(BG-8), NU TREBUIE sa existe (codTipOperatiune = 40) ."
+        }
+    ],
+    "BR-210 start has a place and a customs office": [
+        {
+            "rule": "BR-046",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 10, 20, 30, 60 sau 70 (Achizitie intracomunitara, Livrare intracomunitara, Transport pe teritoriul national, Tranzactie intracomunitara - Intrare pentru depozitare/formare nou transport sau Tranzactie intracomunitara - Iesire dupa depozitare/formare nou transport), atunci Codul biroului vamal(BT-24) NU TREBUIE sa existe (codTipOperatiune = 10) ."
+        },
+        {
+            "rule": "BR-210",
+            "location": "/eTransport/notificare/locStartTraseuRutier",
+            "message": "Locul de start al traseului rutier (BG-6) TREBUIE sa aibe cel putin unul si numai unul dintre atributele cod punct de trecere frontiera(BT-25), cod birou vamal(BT-26) sau elementul locatie(BG-7)."
+        },
+        {
+            "rule": "BR-216",
+            "location": "/eTransport/notificare/locStartTraseuRutier",
+            "message": "Daca codul operatiunii este diferit de 40(Import), atunci cod birou vamal(BT-26) din Locul de start al traseului rutier(BG-6) nu trebuie sa existe."
+        }
+    ],
+    "BR-210 start has nothing": [
+        {
+            "rule": "BR-210",
+            "location": "/eTransport/notificare/locStartTraseuRutier",
+            "message": "Locul de start al traseului rutier (BG-6) TREBUIE sa aibe cel putin unul si numai unul dintre atributele cod punct de trecere frontiera(BT-25), cod birou vamal(BT-26) sau elementul locatie(BG-7)."
+        }
+    ],
+    "BR-211 end has a place and a customs office": [
+        {
+            "rule": "BR-046",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 10, 20, 30, 60 sau 70 (Achizitie intracomunitara, Livrare intracomunitara, Transport pe teritoriul national, Tranzactie intracomunitara - Intrare pentru depozitare/formare nou transport sau Tranzactie intracomunitara - Iesire dupa depozitare/formare nou transport), atunci Codul biroului vamal(BT-24) NU TREBUIE sa existe (codTipOperatiune = 20) ."
+        },
+        {
+            "rule": "BR-211",
+            "location": "/eTransport/notificare/locFinalTraseuRutier",
+            "message": "Locul de final al traseului rutier (BG-8) TREBUIE sa aibe cel putin unul si numai unul dintre atributele cod punct de trecere frontiera(BT-37), cod birou vamal(BT-38) sau elementul locatie(BG-9)."
+        },
+        {
+            "rule": "BR-217",
+            "location": "/eTransport/notificare/locFinalTraseuRutier",
+            "message": "Daca codul operatiunii este diferit de 50(Export), atunci cod birou vamal(BT-38)din Locul de final al traseului rutier(BG-8) nu trebuie sa existe."
+        }
+    ],
+    "BR-211 end has nothing": [
+        {
+            "rule": "BR-211",
+            "location": "/eTransport/notificare/locFinalTraseuRutier",
+            "message": "Locul de final al traseului rutier (BG-8) TREBUIE sa aibe cel putin unul si numai unul dintre atributele cod punct de trecere frontiera(BT-37), cod birou vamal(BT-38) sau elementul locatie(BG-9)."
+        }
+    ],
+    "BR-216 customs office at the start of an export": [
+        {
+            "rule": "BR-216",
+            "location": "/eTransport/notificare/locStartTraseuRutier",
+            "message": "Daca codul operatiunii este diferit de 40(Import), atunci cod birou vamal(BT-26) din Locul de start al traseului rutier(BG-6) nu trebuie sa existe."
+        }
+    ],
+    "BR-217 customs office at the end of an import": [
+        {
+            "rule": "BR-217",
+            "location": "/eTransport/notificare/locFinalTraseuRutier",
+            "message": "Daca codul operatiunii este diferit de 50(Export), atunci cod birou vamal(BT-38)din Locul de final al traseului rutier(BG-8) nu trebuie sa existe."
+        }
+    ],
+    "BR-218 no gross weight": [
+        {
+            "rule": "BR-020",
+            "location": "/eTransport/notificare/bunuriTransportate",
+            "message": "Greutatea bruta(BT-12) TREBUIE sa fie mai mare sau egala cu greutatea neta(BT-11) ( = < greutateNeta = 480.00 )."
+        },
+        {
+            "rule": "BR-218",
+            "location": "/eTransport/notificare/bunuriTransportate",
+            "message": "Intr-o Notificare(BG-1), elementul Bunuri transportate(BG-3) trebuie sa contina atributul Greutate bruta (BT-12)."
+        }
+    ],
+    "BR-020 gross weight below net weight": [
+        {
+            "rule": "BR-020",
+            "location": "/eTransport/notificare/bunuriTransportate",
+            "message": "Greutatea bruta(BT-12) TREBUIE sa fie mai mare sau egala cu greutatea neta(BT-11) (greutateBruta = 100 < greutateNeta = 480.00 )."
+        }
+    ],
+    "BR-068 purpose not allowed for an acquisition": [
+        {
+            "rule": "BR-068",
+            "location": "/eTransport/notificare/bunuriTransportate",
+            "message": "Daca codul operatiunii(BT-4) este 10(Achizitie intracomunitara), atunci Scopul operatiunii(BT-8) TREBUIE sa ia una dintre valorile: '101', '201', '301', '401', '501', '601', '703', '801', '802', '901', '1001', '1101', '9901' (codTipOperatiune = 10codScopOperatiune = 704) ."
+        }
+    ],
+    "BR-069 purpose not allowed for a delivery": [
+        {
+            "rule": "BR-069",
+            "location": "/eTransport/notificare/bunuriTransportate",
+            "message": "Daca codul operatiunii(BT-4) este 20(Livrare intracomunitara), atunci Scopul operatiunii(BT-8) TREBUIE sa ia una dintre valorile: '101', '301', '703', '801', '802', '9901' (codTipOperatiune = 20codScopOperatiune = 201) ."
+        }
+    ],
+    "BR-070 purpose not allowed for national transport": [
+        {
+            "rule": "BR-070",
+            "location": "/eTransport/notificare/bunuriTransportate",
+            "message": "Daca codul operatiunii(BT-4) este 30(Transport pe teritoriul national), atunci Scopul operatiunii(BT-8) TREBUIE sa ia una dintre valorile: '101', '704', '705', '9901' (codTipOperatiune = 30codScopOperatiune = 201) ."
+        }
+    ],
+    "BR-205 purpose not allowed for an import": [
+        {
+            "rule": "BR-205",
+            "location": "/eTransport/notificare/bunuriTransportate",
+            "message": "Daca codul operatiunii(BT-4) este 12(Operatiuni in sistem lohn (UE) - intrare), 14(Stocuri la dispozitia clientului (Call-off stock) - intrare), 22(Operatiuni in sistem lohn (UE) - iesire), 24(Stocuri la dispozitia clientului (Call-off stock) - iesire), 40(Import), 50(Export), 60(Tranzactie intracomunitara - Intrare pentru depozitare/formare nou transport) sau 70(Tranzactie intracomunitara - Iesire dupa depozitare/formare nou transport), atunci Scopul operatiunii(BT-8) TREBUIE sa ia valorea: '9999' (codTipOperatiune = 40codScopOperatiune = 101) ."
+        }
+    ],
+    "BR-205 purpose not allowed for a processing entry": [
+        {
+            "rule": "BR-205",
+            "location": "/eTransport/notificare/bunuriTransportate",
+            "message": "Daca codul operatiunii(BT-4) este 12(Operatiuni in sistem lohn (UE) - intrare), 14(Stocuri la dispozitia clientului (Call-off stock) - intrare), 22(Operatiuni in sistem lohn (UE) - iesire), 24(Stocuri la dispozitia clientului (Call-off stock) - iesire), 40(Import), 50(Export), 60(Tranzactie intracomunitara - Intrare pentru depozitare/formare nou transport) sau 70(Tranzactie intracomunitara - Iesire dupa depozitare/formare nou transport), atunci Scopul operatiunii(BT-8) TREBUIE sa ia valorea: '9999' (codTipOperatiune = 12codScopOperatiune = 101) ."
+        }
+    ],
+    "BR-206 no tariff code": [
+        {
+            "rule": "BR-206",
+            "location": "/eTransport/notificare/bunuriTransportate",
+            "message": "Daca codul operatiunii(BT-4) este diferit de 60(Tranzactie intracomunitara - Intrare pentru depozitare/formare nou transport) sau 70(Tranzactie intracomunitara - Iesire dupa depozitare/formare nou transport), atunci Cod tarifar(BT-6) TREBUIE sa existe (codTipOperatiune = 30codScopOperatiune = 101) ."
+        }
+    ],
+    "BR-207 no net weight": [
+        {
+            "rule": "BR-207",
+            "location": "/eTransport/notificare/bunuriTransportate",
+            "message": "Daca codul operatiunii(BT-4) este diferit de 60(Tranzactie intracomunitara - Intrare pentru depozitare/formare nou transport) sau 70(Tranzactie intracomunitara - Iesire dupa depozitare/formare nou transport), atunci Greutate neta(BT-11) TREBUIE sa existe (codTipOperatiune = 30) ."
+        }
+    ],
+    "BR-208 no value": [
+        {
+            "rule": "BR-208",
+            "location": "/eTransport/notificare/bunuriTransportate",
+            "message": "Daca codul operatiunii(BT-4) este diferit de 60(Tranzactie intracomunitara - Intrare pentru depozitare/formare nou transport) sau 70(Tranzactie intracomunitara - Iesire dupa depozitare/formare nou transport), atunci Valoare fara TVA(BT-13) TREBUIE sa existe (codTipOperatiune = 30) ."
+        }
+    ],
+    "BR-027 quantity of zero": [
+        {
+            "rule": "BR-027",
+            "location": "/eTransport/notificare/bunuriTransportate/@cantitate",
+            "message": "Cantitatea bunului transportat(BT-9) NU TREBUIE sa ia valori negative."
+        }
+    ],
+    "BR-027 negative quantity": [
+        {
+            "rule": "BR-027",
+            "location": "/eTransport/notificare/bunuriTransportate/@cantitate",
+            "message": "Cantitatea bunului transportat(BT-9) NU TREBUIE sa ia valori negative."
+        }
+    ],
+    "BR-035 quantity with three decimals": [
+        {
+            "rule": "BR-035",
+            "location": "/eTransport/notificare/bunuriTransportate/@cantitate",
+            "message": "Cantitatea bunului transportat(BT-9) TREBUIE sa aibe maxim 2 zecimale."
+        }
+    ],
+    "BR-036 quantity with thirteen digits": [
+        {
+            "rule": "BR-036",
+            "location": "/eTransport/notificare/bunuriTransportate/@cantitate",
+            "message": "Cantitatea bunului transportat(BT-9) TREBUIE sa aibe maxim 12 unitati intregi."
+        }
+    ],
+    "BR-036 accepts thirteen digits without a decimal point": [],
+    "BR-028 net weight of zero": [
+        {
+            "rule": "BR-028",
+            "location": "/eTransport/notificare/bunuriTransportate/@greutateNeta",
+            "message": "Greutatea neta a bunului transportat(BT-11) TREBUIE sa fie strict mai mare decat 0(zero)."
+        }
+    ],
+    "BR-037 net weight with three decimals": [
+        {
+            "rule": "BR-037",
+            "location": "/eTransport/notificare/bunuriTransportate/@greutateNeta",
+            "message": "Greutatea neta a bunului transportat(BT-11) TREBUIE sa aibe maxim 2 zecimale."
+        }
+    ],
+    "BR-038 net weight with thirteen digits": [
+        {
+            "rule": "BR-020",
+            "location": "/eTransport/notificare/bunuriTransportate",
+            "message": "Greutatea bruta(BT-12) TREBUIE sa fie mai mare sau egala cu greutatea neta(BT-11) (greutateBruta = 510.25 < greutateNeta = 1234567890123.5 )."
+        },
+        {
+            "rule": "BR-038",
+            "location": "/eTransport/notificare/bunuriTransportate/@greutateNeta",
+            "message": "Greutatea neta a bunului transportat(BT-11) TREBUIE sa aibe maxim 12 unitati intregi."
+        }
+    ],
+    "BR-029 gross weight of zero": [
+        {
+            "rule": "BR-020",
+            "location": "/eTransport/notificare/bunuriTransportate",
+            "message": "Greutatea bruta(BT-12) TREBUIE sa fie mai mare sau egala cu greutatea neta(BT-11) (greutateBruta = 0 < greutateNeta = 480.00 )."
+        },
+        {
+            "rule": "BR-029",
+            "location": "/eTransport/notificare/bunuriTransportate/@greutateBruta",
+            "message": "Greutatea bruta a bunului transportat(BT-12) TREBUIE sa fie strict mai mare decat 0(zero)."
+        }
+    ],
+    "BR-039 gross weight with three decimals": [
+        {
+            "rule": "BR-039",
+            "location": "/eTransport/notificare/bunuriTransportate/@greutateBruta",
+            "message": "Greutatea bruta a bunului transportat(BT-12) TREBUIE sa aibe maxim 2 zecimale."
+        }
+    ],
+    "BR-040 gross weight with thirteen digits": [
+        {
+            "rule": "BR-040",
+            "location": "/eTransport/notificare/bunuriTransportate/@greutateBruta",
+            "message": "Greutatea bruta a bunului transportat(BT-12) TREBUIE sa aibe maxim 12 unitati intregi."
+        }
+    ],
+    "BR-030 negative value": [
+        {
+            "rule": "BR-030",
+            "location": "/eTransport/notificare/bunuriTransportate/@valoareLeiFaraTva",
+            "message": "Valoarea bunului transportat(BT-13) NU TREBUIE sa ia valori negative. Valoarea 0(zero) este acceptata."
+        }
+    ],
+    "BR-041 value with three decimals": [
+        {
+            "rule": "BR-041",
+            "location": "/eTransport/notificare/bunuriTransportate/@valoareLeiFaraTva",
+            "message": "Valoarea bunului transportat(BT-13) TREBUIE sa aibe maxim 2 zecimale."
+        }
+    ],
+    "BR-042 value with thirteen digits": [
+        {
+            "rule": "BR-042",
+            "location": "/eTransport/notificare/bunuriTransportate/@valoareLeiFaraTva",
+            "message": "Valoarea bunului transportat(BT-13) TREBUIE sa aibe maxim 12 unitati intregi."
+        }
+    ],
+    "BR-034 tariff code with two digits": [
+        {
+            "rule": "BR-034",
+            "location": "/eTransport/notificare/bunuriTransportate/@codTarifar",
+            "message": "Codul tarifar(BT-6) TREBUIE sa aibe 4,6 sau 8 caractere. Sunt acceptat doar caractere numerice(0-9)."
+        }
+    ],
+    "BR-034 tariff code with five digits": [
+        {
+            "rule": "BR-034",
+            "location": "/eTransport/notificare/bunuriTransportate/@codTarifar",
+            "message": "Codul tarifar(BT-6) TREBUIE sa aibe 4,6 sau 8 caractere. Sunt acceptat doar caractere numerice(0-9)."
+        }
+    ],
+    "BR-034 tariff code with ten digits": [
+        {
+            "rule": "BR-034",
+            "location": "/eTransport/notificare/bunuriTransportate/@codTarifar",
+            "message": "Codul tarifar(BT-6) TREBUIE sa aibe 4,6 sau 8 caractere. Sunt acceptat doar caractere numerice(0-9)."
+        }
+    ],
+    "BR-034 tariff code with letters": [
+        {
+            "rule": "BR-034",
+            "location": "/eTransport/notificare/bunuriTransportate/@codTarifar",
+            "message": "Codul tarifar(BT-6) TREBUIE sa aibe 4,6 sau 8 caractere. Sunt acceptat doar caractere numerice(0-9)."
+        }
+    ],
+    "BR-027 on both of two lines": [
+        {
+            "rule": "BR-027",
+            "location": "/eTransport/notificare/bunuriTransportate[1]/@cantitate",
+            "message": "Cantitatea bunului transportat(BT-9) NU TREBUIE sa ia valori negative."
+        },
+        {
+            "rule": "BR-027",
+            "location": "/eTransport/notificare/bunuriTransportate[2]/@cantitate",
+            "message": "Cantitatea bunului transportat(BT-9) NU TREBUIE sa ia valori negative."
+        }
+    ],
+    "BR-031 vehicle in lower case": [
+        {
+            "rule": "BR-031",
+            "location": "/eTransport/notificare/dateTransport/@nrVehicul",
+            "message": "Numar inmatriculare vehicul(BT-18, BT-61) TREBUIE sa aiba minim 2 caractere si maxim 20 de caractere. Sunt acceptate caractere alfabetice majuscule (A-Z) si caractere numerice(0-9)."
+        }
+    ],
+    "BR-032 first trailer": [
+        {
+            "rule": "BR-032",
+            "location": "/eTransport/notificare/dateTransport/@nrRemorca1",
+            "message": "Numar inmatriculare remorca 1(BT-19, BT-62) TREBUIE sa aiba minim 2 caractere si maxim 20 de caractere. Sunt acceptate caractere alfabetice majuscule (A-Z) si caractere numerice(0-9)."
+        }
+    ],
+    "BR-033 second trailer": [
+        {
+            "rule": "BR-033",
+            "location": "/eTransport/notificare/dateTransport/@nrRemorca2",
+            "message": "Numar inmatriculare remorca 2(BT-20, BT-63) TREBUIE sa aiba minim 2 caractere si maxim 20 de caractere. Sunt acceptate caractere alfabetice majuscule (A-Z) si caractere numerice(0-9)."
+        }
+    ],
+    "BR-214 town name of one letter": [
+        {
+            "rule": "BR-214",
+            "location": "/eTransport/notificare/locStartTraseuRutier/locatie/@denumireLocalitate",
+            "message": "Denumire localitate(BT-28, BT-40) TREBUIE sa aiba minim 2 caractere si maxim 100 de caractere."
+        }
+    ],
+    "BR-214 town name too long": [
+        {
+            "rule": "BR-214",
+            "location": "/eTransport/notificare/locFinalTraseuRutier/locatie/@denumireLocalitate",
+            "message": "Denumire localitate(BT-28, BT-40) TREBUIE sa aiba minim 2 caractere si maxim 100 de caractere."
+        }
+    ],
+    "BR-215 street name of one letter": [
+        {
+            "rule": "BR-215",
+            "location": "/eTransport/notificare/locFinalTraseuRutier/locatie/@denumireStrada",
+            "message": "Denumire strada(BT-29, BT-41) TREBUIE sa aiba minim 2 caractere si maxim 100 de caractere."
+        }
+    ],
+    "BR-026 other document without remarks": [
+        {
+            "rule": "BR-026",
+            "location": "/eTransport/notificare/documenteTransport/@tipDocument",
+            "message": "Daca codul tipului de document este '9999'(Altele), atunci atributul 'observatii' TREBUIE sa existe."
+        }
+    ],
+    "BR-CL-001 unknown country": [
+        {
+            "rule": "BR-004",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 10, 12, 14, 20, 22, 24, 60 sau 70 (Achizitie intracomunitara, Operatiuni in sistem lohn (UE) - intrare, Stocuri la dispozitia clientului (Call-off stock) - intrare, Livrare intracomunitara, Operatiuni in sistem lohn (UE) - iesire, Stocuri la dispozitia clientului (Call-off stock) - iesire, Tranzactie intracomunitara - Intrare pentru depozitare/formare nou transport sau Tranzactie intracomunitara - Iesire dupa depozitare/formare nou transport), atunci codul tarii partenerului comercial (BT-15) TREBUIE sa apartina unei tari din UE. Codul 'RO' este EXCEPTAT (ZZ)."
+        },
+        {
+            "rule": "BR-CL-001",
+            "location": "/eTransport/notificare/partenerComercial/@codTara",
+            "message": "Codul țării(BT-15) TREBUIE să fie ales din lista de coduri ISO 3166-1. Pentru Grecia TREBUIE uilizat codul \"EL\".(codTara = 'ZZ')"
+        }
+    ],
+    "BR-CL-001 Greece as GR": [
+        {
+            "rule": "BR-004",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 10, 12, 14, 20, 22, 24, 60 sau 70 (Achizitie intracomunitara, Operatiuni in sistem lohn (UE) - intrare, Stocuri la dispozitia clientului (Call-off stock) - intrare, Livrare intracomunitara, Operatiuni in sistem lohn (UE) - iesire, Stocuri la dispozitia clientului (Call-off stock) - iesire, Tranzactie intracomunitara - Intrare pentru depozitare/formare nou transport sau Tranzactie intracomunitara - Iesire dupa depozitare/formare nou transport), atunci codul tarii partenerului comercial (BT-15) TREBUIE sa apartina unei tari din UE. Codul 'RO' este EXCEPTAT (GR)."
+        },
+        {
+            "rule": "BR-CL-001",
+            "location": "/eTransport/notificare/partenerComercial/@codTara",
+            "message": "Codul țării(BT-15) TREBUIE să fie ales din lista de coduri ISO 3166-1. Pentru Grecia TREBUIE uilizat codul \"EL\".(codTara = 'GR')"
+        }
+    ],
+    "BR-CL-001 country in lower case": [
+        {
+            "rule": "BR-005",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Daca codul operatiunii(BT-4) este 30(Transport pe teritoriul national), atunci codul tarii partenerului comercial (BT-15) TREBUIE sa fie corespunzator Romaniei(RO) (ro)."
+        },
+        {
+            "rule": "BR-CL-001",
+            "location": "/eTransport/notificare/partenerComercial/@codTara",
+            "message": "Codul țării(BT-15) TREBUIE să fie ales din lista de coduri ISO 3166-1. Pentru Grecia TREBUIE uilizat codul \"EL\".(codTara = 'ro')"
+        }
+    ],
+    "BR-CL-010 unknown organiser country": [
+        {
+            "rule": "BR-CL-010",
+            "location": "/eTransport/notificare/dateTransport/@codTaraOrgTransport",
+            "message": "Codul țării transportatorului(BT-22) TREBUIE să fie ales din lista de coduri ISO 3166-1. Pentru Grecia TREBUIE uilizat codul \"EL\".(codTaraOrgTransport = 'ZZ')"
+        }
+    ],
+    "BR-CL-002 unknown county": [
+        {
+            "rule": "BR-CL-002",
+            "location": "/eTransport/notificare/locStartTraseuRutier/locatie/@codJudet",
+            "message": "Codul județului(BT-27/ BT-37) TREBUIE să fie ales din lista de coduri listJudet.(codJudet = '41')"
+        }
+    ],
+    "BR-CL-003 unknown unit of measure": [
+        {
+            "rule": "BR-CL-003",
+            "location": "/eTransport/notificare/bunuriTransportate/@codUnitateMasura",
+            "message": "Codul unității de masura(BT-13) TREBUIE să fie ales în conformitate cu Recomandarea UN/ECE nr. 20 şi Recomandarea UN/ECE nr 21.(codUnitateMasura = 'QQQ')"
+        }
+    ],
+    "BR-CL-004 unknown operation type": [
+        {
+            "rule": "BR-CL-004",
+            "location": "/eTransport/notificare/@codTipOperatiune",
+            "message": "Codul operatiunii(BT-4) TREBUIE să fie ales din lista de coduri listTipOperatiune.(codTipOperatiune = '99')"
+        }
+    ],
+    "BR-CL-005 unknown purpose": [
+        {
+            "rule": "BR-070",
+            "location": "/eTransport/notificare/bunuriTransportate",
+            "message": "Daca codul operatiunii(BT-4) este 30(Transport pe teritoriul national), atunci Scopul operatiunii(BT-8) TREBUIE sa ia una dintre valorile: '101', '704', '705', '9901' (codTipOperatiune = 30codScopOperatiune = 1234) ."
+        },
+        {
+            "rule": "BR-CL-005",
+            "location": "/eTransport/notificare/bunuriTransportate/@codScopOperatiune",
+            "message": "Codul scopului operatiunii(BT-8) TREBUIE să fie ales din lista de coduri listScopOperatiune.(codScopOperatiune = '1234')"
+        }
+    ],
+    "BR-CL-006 unknown border crossing": [
+        {
+            "rule": "BR-CL-006",
+            "location": "/eTransport/notificare/locStartTraseuRutier/@codPtf",
+            "message": "Codul Punctului de trecere a frontierei(BT-25) TREBUIE să fie ales din lista de coduri listPtf.(codPtf = '999')"
+        }
+    ],
+    "BR-CL-007 unknown customs office": [
+        {
+            "rule": "BR-CL-007",
+            "location": "/eTransport/notificare/locStartTraseuRutier/@codBirouVamal",
+            "message": "Codul Biroului vamal(BT-26) TREBUIE să fie ales din lista de coduri listBirouVamal.(codBirouVamal = '1')"
+        }
+    ],
+    "BR-CL-008 unknown confirmation type": [
+        {
+            "rule": "BR-CL-008",
+            "location": "/eTransport/confirmare/@tipConfirmare",
+            "message": "Codul tipului de confirmare(BT-56) TREBUIE să fie ales din lista de coduri listTipConfirmare.(tipConfirmare = '99')"
+        }
+    ],
+    "BR-CL-009 unknown document type": [
+        {
+            "rule": "BR-CL-009",
+            "location": "/eTransport/notificare/documenteTransport/@tipDocument",
+            "message": "Codul tipului de document(BT-47) TREBUIE să fie ales din lista de coduri listTipDocument.(tipDocument = '77')"
+        }
+    ],
+    "stops: quantity is not a number": "stops",
+    "stops: gross weight is empty": "stops",
+    "stops: two documents have remarks": "stops"
+}

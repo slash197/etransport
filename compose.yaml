@@ -11,3 +11,15 @@ services:
         required: false
     volumes:
       - .:/app
+
+  # Saxon and SchXslt, for recording what the tests expect (make golden)
+  oracle:
+    build:
+      context: docker
+      dockerfile: oracle.Dockerfile
+    user: "${UID:-1000}:${GID:-1000}"
+    working_dir: /app
+    volumes:
+      - .:/app
+    profiles:
+      - oracle

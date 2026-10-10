@@ -14,3 +14,4 @@
 # ANAF files are kept byte for byte as published
 /resources/*.xsd -text
 /resources/*.sch -text
+/bin export-ignore
