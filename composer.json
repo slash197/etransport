@@ -1,0 +1,38 @@
+{
+    "name": "slash197/etransport",
+    "description": "PHP client, message builder and local validator for ANAF's RO e-Transport system",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["etransport", "e-transport", "ro-e-transport", "anaf", "uit", "schematron", "romania"],
+    "homepage": "https://github.com/slash197/etransport",
+    "authors": [
+        {
+            "name": "Levi Szocs",
+            "email": "levi.szocs@codescape.ro"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "ext-dom": "*",
+        "ext-libxml": "*",
+        "ext-mbstring": "*"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "slash197\\eTransport\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "slash197\\eTransport\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable"
+}

@@ -1,0 +1,10 @@
+/vendor/
+/composer.lock
+/.phpunit.cache/
+/.phpunit.result.cache
+/.idea/
+/.vscode/
+/.claude
+/spike/
+.env
+*.code-workspace
