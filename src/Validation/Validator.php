@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace slash197\eTransport\Validation;
 
 use slash197\eTransport\Exception\ETransportException;
+use slash197\eTransport\Message;
 use slash197\eTransport\Validation\Schematron\Schema;
 
 /**
@@ -38,8 +39,11 @@ final class Validator
      *
      * @throws \slash197\eTransport\Exception\UnsupportedRulesException When the rules file cannot be evaluated
      */
-    public function validate(string $xml): Violations
+    public function validate(Message|string $xml): Violations
     {
+        if ($xml instanceof Message) {
+            $xml = $xml->toXml();
+        }
         if (!is_file($this->schemaFile)) {
             throw new ETransportException("Schema file not found: {$this->schemaFile}");
         }

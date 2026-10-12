@@ -4,20 +4,63 @@
 
 PHP package for [RO e-Transport](https://etransport.mfinante.gov.ro), ANAF's system for declaring the road transport of goods in Romania.
 
-> **Status: in development.** Nothing is released yet. Validation works; the message builder and the client are not written.
+> **Status: in development.** Nothing is released yet. Messages and validation work; the client is not written.
 
 - **Local validation without Java.** ANAF publishes its business rules as a Schematron file that needs an XSLT 2 processor. This package evaluates the same file in plain PHP, so a declaration can be checked before it is sent.
-- **Typed messages** (planned). Notifications, corrections, deletions, vehicle changes and confirmations built from PHP objects.
+- **Typed messages.** Notifications, corrections, deletions, vehicle changes and confirmations built from PHP objects.
 - **A client for the web services** (planned). Upload, message status, message list and transporter info, over any PSR-18 HTTP client.
 
 It does not obtain ANAF OAuth tokens; it takes one you already have.
+
+## Messages
+
+```php
+use slash197\eTransport\Data\BunuriTransportate;
+use slash197\eTransport\Data\DateTransport;
+use slash197\eTransport\Data\DocumentTransport;
+use slash197\eTransport\Data\Judet;
+use slash197\eTransport\Data\Locatie;
+use slash197\eTransport\Data\LocTraseuRutier;
+use slash197\eTransport\Data\Notificare;
+use slash197\eTransport\Data\PartenerComercial;
+use slash197\eTransport\Data\ScopOperatiune;
+use slash197\eTransport\Data\TipDocument;
+use slash197\eTransport\Data\TipOperatiune;
+use slash197\eTransport\Message;
+
+$message = Message::notificare('10000001', new Notificare(
+    TipOperatiune::TransportNational,
+    [new BunuriTransportate(ScopOperatiune::Comercializare, 'Mobilier din lemn', 12.5, 'H87', 510.25, codTarifar: '94036010')],
+    new PartenerComercial('RO', 'Partener Exemplu SRL', '10000002'),
+    new DateTransport('B100ABC', 'RO', 'Transportator Exemplu SRL', new DateTimeImmutable('2026-10-12'), codOrgTransport: '10000003'),
+    LocTraseuRutier::locatie(new Locatie(Judet::Cluj, 'Cluj-Napoca', 'Strada Exemplu', '1')),
+    LocTraseuRutier::locatie(new Locatie(Judet::Bucuresti, 'Bucuresti', 'Bulevardul Exemplu', '2')),
+    [new DocumentTransport(TipDocument::AvizDeInsotire, new DateTimeImmutable('2026-10-10'), 'F-100')],
+), refDeclarant: 'REF-1');
+
+$xml = $message->toXml();
+```
+
+| Message | |
+|---|---|
+| `Message::notificare($codDeclarant, $notificare)` | Declares a transport |
+| `Message::corectie($codDeclarant, $uit, $notificare)` | Replaces the content of a declared notification |
+| `Message::stergere($codDeclarant, $uit)` | Withdraws a notification |
+| `Message::confirmare($codDeclarant, $uit, TipConfirmare::Confirmat)` | Confirms or denies that the goods were received |
+| `Message::modifVehicul($codDeclarant, $uit, $nrVehicul, $dataModificare)` | Changes the vehicle |
+
+Every one also takes `refDeclarant`, your own reference for the message, and `declPostAvarie: true` for a declaration made after an outage of ANAF's system.
+
+Properties are named as in ANAF's schema, so its field specification applies directly. The short code lists are enums (`TipOperatiune`, `ScopOperatiune`, `TipDocument`, `TipConfirmare`, `Judet`), and a plain number is accepted wherever one is, in case ANAF adds a code. `Judet::tryFromCode('CJ')` finds a county by its abbreviation. Border crossing points and customs offices are numbers from ANAF's lists; countries and units of measure are their usual codes.
+
+A message is not checked when it is built. Pass it to the validator before sending it.
 
 ## Validation
 
 ```php
 use slash197\eTransport\Validation\Validator;
 
-$violations = (new Validator())->validate($xml);
+$violations = (new Validator())->validate($message); // or an XML string
 
 if (!$violations->isEmpty()) {
     foreach ($violations as $violation) {
