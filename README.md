@@ -88,7 +88,7 @@ if ($outcome->isFinal()) {
 }
 ```
 
-`outcome()` asks for the status of the upload first. Once ANAF has processed the message, it looks for its record in the message list: by the id of the upload, then by UIT, then by your reference. A deletion that went through is not listed, and a confirmation only as part of its notification, so they count as accepted when the list holds no error for them; pass the message type, or `outcome()` cannot tell. ANAF answers `stareMesaj` at most 100 times a day for one upload and `lista` at most 1000 times a day, so space the calls out. `PollSchedule` says when: four checks in about the first minute, since ANAF usually answers within seconds, then less and less often, and none after a day.
+`outcome()` asks for the status of the upload first. Once ANAF has processed the message, it looks for its record in the message list: by the id of the upload, then by UIT, then by your reference. A deletion that went through is not listed, and a confirmation only as part of its notification, so they count as accepted when the list holds no error for them; pass the message type, or `outcome()` cannot tell. ANAF answers `stareMesaj` at most 100 times a day for one upload and `lista` at most 1000 times a day, so space the calls out. `PollSchedule` says when. ANAF processes uploads in a batch at the start of each minute, so it checks 20, 70 and 130 seconds after the upload, then less and less often, and not at all after a day.
 
 ```php
 use slash197\eTransport\PollSchedule;

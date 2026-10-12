@@ -9,20 +9,20 @@ use slash197\eTransport\PollSchedule;
 
 final class PollScheduleTest extends TestCase
 {
-    public function testChecksComeInAShortBurstAndThenBackOff(): void
+    public function testChecksFollowTheFirstMinutesAndThenBackOff(): void
     {
         $schedule = new PollSchedule();
         $uploadedAt = new \DateTimeImmutable('2026-10-12 12:00:00');
 
         $times = [];
-        for ($checks = 0; $checks < 11; $checks++) {
+        for ($checks = 0; $checks < 9; $checks++) {
             $times[] = $schedule->nextCheck($uploadedAt, $checks)?->format('H:i:s');
         }
 
         self::assertSame([
-            '12:00:05', '12:00:15', '12:00:35', '12:01:05',
-            '12:02:05', '12:04:05', '12:09:05', '12:19:05', '12:34:05',
-            '13:04:05', '13:34:05',
+            '12:00:20', '12:01:10', '12:02:10',
+            '12:04:10', '12:09:10', '12:19:10', '12:34:10',
+            '13:04:10', '13:34:10',
         ], $times);
     }
 
@@ -36,8 +36,8 @@ final class PollScheduleTest extends TestCase
             $checks++;
         }
 
-        self::assertSame(55, $checks);
-        self::assertSame('2026-10-13 11:34:05', $schedule->nextCheck($uploadedAt, 54)?->format('Y-m-d H:i:s'));
+        self::assertSame(53, $checks);
+        self::assertSame('2026-10-13 11:34:10', $schedule->nextCheck($uploadedAt, 52)?->format('Y-m-d H:i:s'));
         self::assertNull($schedule->nextCheck($uploadedAt, 500));
     }
 
@@ -46,11 +46,11 @@ final class PollScheduleTest extends TestCase
         $schedule = new PollSchedule();
         $uploadedAt = new \DateTimeImmutable('2026-10-12 12:00:00');
 
-        self::assertFalse($schedule->isDue($uploadedAt, 0, new \DateTimeImmutable('2026-10-12 12:00:04')));
-        self::assertTrue($schedule->isDue($uploadedAt, 0, new \DateTimeImmutable('2026-10-12 12:00:05')));
-        self::assertFalse($schedule->isDue($uploadedAt, 1, new \DateTimeImmutable('2026-10-12 12:00:05')));
+        self::assertFalse($schedule->isDue($uploadedAt, 0, new \DateTimeImmutable('2026-10-12 12:00:19')));
+        self::assertTrue($schedule->isDue($uploadedAt, 0, new \DateTimeImmutable('2026-10-12 12:00:20')));
+        self::assertFalse($schedule->isDue($uploadedAt, 1, new \DateTimeImmutable('2026-10-12 12:00:20')));
         self::assertTrue($schedule->isDue($uploadedAt, 1, new \DateTimeImmutable('2026-10-14 12:00:00')));
-        self::assertFalse($schedule->isDue($uploadedAt, 55, new \DateTimeImmutable('2026-10-14 12:00:00')));
+        self::assertFalse($schedule->isDue($uploadedAt, 53, new \DateTimeImmutable('2026-10-14 12:00:00')));
     }
 
     public function testAScheduleOfItsOwnIsAccepted(): void

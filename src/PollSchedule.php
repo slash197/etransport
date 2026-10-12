@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace slash197\eTransport;
 
 /**
- * When to ask for the outcome of an upload: a few times shortly after it,
- * since ANAF usually answers within seconds, then less and less often.
+ * When to ask for the outcome of an upload. ANAF processes uploads in a
+ * batch at the start of each minute, so the first checks come a little
+ * after each of the first minutes can have passed, then less and less often.
  *
  * ANAF answers the status of one upload at most 100 times a day, and the
  * schedule stays below that.
@@ -16,15 +17,15 @@ final readonly class PollSchedule
     private const DAILY_LIMIT = 100;
 
     /**
-     * By default: 5, 15, 35 and 65 seconds after the upload, then after 2, 4,
-     * 9, 19 and 34 minutes, then every 30 minutes until a day has passed.
+     * By default: 20, 70 and 130 seconds after the upload, then after about
+     * 4, 9, 19 and 34 minutes, then every 30 minutes until a day has passed.
      *
      * @param list<int> $delays       Seconds to wait before each of the first checks
      * @param int       $then         Seconds to wait before every check after those
      * @param int       $giveUpAfter  Seconds after the upload from which no check is made
      */
     public function __construct(
-        private array $delays = [5, 10, 20, 30, 60, 120, 300, 600, 900],
+        private array $delays = [20, 50, 60, 120, 300, 600, 900],
         private int $then = 1800,
         private int $giveUpAfter = 86400,
     ) {

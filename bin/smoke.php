@@ -105,7 +105,7 @@ try {
 
     // Only the first two minutes or so; run the script again with nothing to see the list later.
     $schedule = new PollSchedule();
-    for ($checks = 0; $checks < 5; $checks++) {
+    for ($checks = 0; $checks < 3; $checks++) {
         $next = $schedule->nextCheck($uploadedAt, $checks);
         if ($next === null) {
             break;
