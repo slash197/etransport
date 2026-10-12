@@ -51,7 +51,7 @@ $xml = $message->toXml();
 
 Every one also takes `refDeclarant`, your own reference for the message, and `declPostAvarie: true` for a declaration made after an outage of ANAF's system.
 
-Properties are named as in ANAF's schema, so its field specification applies directly. The short code lists are enums (`TipOperatiune`, `ScopOperatiune`, `TipDocument`, `TipConfirmare`, `Judet`), and a plain number is accepted wherever one is, in case ANAF adds a code. `Judet::tryFromCode('CJ')` finds a county by its abbreviation. Border crossing points and customs offices are numbers from ANAF's lists; countries and units of measure are their usual codes.
+Properties are named as in ANAF's schema, so its field specification applies directly. The short code lists are enums (`TipOperatiune`, `ScopOperatiune`, `TipDocument`, `TipConfirmare`, `Judet`), and a plain number is accepted wherever one is, in case ANAF adds a code. `Judet::tryFromCode('CJ')` finds a county by its abbreviation. Border crossing points, customs offices and countries are codes from ANAF's lists, which `Nomenclators::puncteTrecereFrontiera()`, `birouriVamale()`, `tari()` and `tariUe()` return with their names, ready for a dropdown. Units of measure are UN/ECE Recommendation 20 and 21 codes, such as `KGM` or `H87`.
 
 A message is not checked when it is built. Pass it to the validator before sending it.
 

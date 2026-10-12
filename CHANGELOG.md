@@ -6,6 +6,7 @@ All notable changes to this package are documented here. The format follows [Kee
 
 ### Added
 
+- `Nomenclators`, with ANAF's lists of border crossing points, customs offices and countries.
 - `PollSchedule`, which says when to ask for the outcome of an upload without exceeding ANAF's daily limit.
 - `Client`, for ANAF's upload, stareMesaj, lista and info services over any PSR-18 HTTP client, and `Client::outcome()`, which tells whether an uploaded message was accepted or rejected.
 - `Message`, which builds the five kinds of message (notificare, corectie, stergere, confirmare, modifVehicul) from typed objects in `Data\`, with enums for the short code lists.

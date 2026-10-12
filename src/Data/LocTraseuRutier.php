@@ -14,8 +14,8 @@ use slash197\eTransport\Support\Xml;
 final readonly class LocTraseuRutier
 {
     /**
-     * @param int|null $codPtf        Border crossing point, from ANAF's list
-     * @param int|null $codBirouVamal Customs office, from ANAF's list
+     * @param int|null $codPtf        Border crossing point, from Nomenclators::puncteTrecereFrontiera()
+     * @param int|null $codBirouVamal Customs office, from Nomenclators::birouriVamale()
      */
     public function __construct(
         public ?Locatie $locatie = null,
