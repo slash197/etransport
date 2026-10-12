@@ -4,13 +4,19 @@
 
 PHP package for [RO e-Transport](https://etransport.mfinante.gov.ro), ANAF's system for declaring the road transport of goods in Romania.
 
-> **Status: in development.** Nothing is released yet. Every message type and every service has been run against ANAF's test environment, for a national transport.
+> **Status: early release.** Every message type and every service has been run against ANAF's test environment, for a national transport. Other operation types are covered by the validation tests only. While the version is 0.x, a minor release may contain breaking changes.
 
 - **Local validation without Java.** ANAF publishes its business rules as a Schematron file that needs an XSLT 2 processor. This package evaluates the same file in plain PHP, so a declaration can be checked before it is sent.
 - **Typed messages.** Notifications, corrections, deletions, vehicle changes and confirmations built from PHP objects.
 - **A client for the web services.** Upload, message status, message list and transporter info, over any PSR-18 HTTP client.
 
 It does not obtain ANAF OAuth tokens; it takes one you already have.
+
+## Installation
+
+```sh
+composer require slash197/etransport
+```
 
 ## Messages
 
