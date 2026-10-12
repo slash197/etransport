@@ -380,13 +380,82 @@ final class ClientTest extends TestCase
         self::assertSame(OutcomeState::Accepted, $byReference->state);
         self::assertSame(self::UIT, $byReference->uit);
 
-        // The valid notification with the same UIT does not say that its deletion went through.
-        $deletion = $this->client()->outcome('5009', '10000001', MessageType::Stergere, self::UIT);
-        self::assertSame(OutcomeState::Processing, $deletion->state);
-        self::assertNull($deletion->listed);
+        // Without the type, the notification with the same UIT is all there is to go by.
+        $untyped = $this->client()->outcome('5009', '10000001', uit: self::UIT);
+        self::assertSame(MessageType::Notificare, $untyped->listed?->tip);
 
-        $confirmation = $this->client()->outcome('5009', '10000001', MessageType::Confirmare, self::UIT);
-        self::assertSame(OutcomeState::Processing, $confirmation->state);
+        // A vehicle change is not taken for the notification it changed.
+        $vehicleChange = $this->client()->outcome('5009', '10000001', MessageType::ModificareVehicul, self::UIT);
+        self::assertSame(OutcomeState::Processing, $vehicleChange->state);
+        self::assertNull($vehicleChange->listed);
+    }
+
+    /**
+     * ANAF does not list a deletion or a confirmation that went through.
+     */
+    #[DataProvider('unlisted')]
+    public function testAMessageThatIsNotListedWhenValidIsAcceptedOnceProcessed(MessageType $type): void
+    {
+        $this->http
+            ->respond(['stare' => 'ok', 'ExecutionStatus' => 0])->respond(self::list())
+            ->respond(['stare' => 'ok', 'ExecutionStatus' => 0])->respond(['Errors' => [['errorMessage' => 'Nu exista mesaje in ultimele 7 zile']], 'ExecutionStatus' => 1])
+            ->respond(['stare' => 'ok', 'ExecutionStatus' => 0])->fail()
+            ->respond(['stare' => 'in prelucrare', 'ExecutionStatus' => 0]);
+
+        $outcome = $this->client()->outcome('5009', '10000001', $type, self::UIT);
+        self::assertSame(OutcomeState::Accepted, $outcome->state);
+        self::assertNull($outcome->listed);
+        self::assertSame(self::UIT, $outcome->uit);
+
+        self::assertSame(OutcomeState::Accepted, $this->client()->outcome('5009', '10000001', $type)->state, 'an empty list');
+        self::assertSame(OutcomeState::Processing, $this->client()->outcome('5009', '10000001', $type)->state, 'a list that cannot be read');
+        self::assertSame(OutcomeState::Processing, $this->client()->outcome('5009', '10000001', $type)->state, 'not processed yet');
+    }
+
+    /**
+     * @return iterable<string, array{MessageType}>
+     */
+    public static function unlisted(): iterable
+    {
+        yield 'deletion' => [MessageType::Stergere];
+        yield 'confirmation' => [MessageType::Confirmare];
+    }
+
+    public function testADeletionWithErrorsInTheListIsRejected(): void
+    {
+        $this->http->respond(['stare' => 'ok', 'ExecutionStatus' => 0])->respond(self::list());
+
+        $outcome = $this->client()->outcome('5004', '10000001', MessageType::Stergere, self::UIT);
+
+        self::assertSame(OutcomeState::Rejected, $outcome->state);
+        self::assertSame(['Nu a fost identificat UIT-ul printre notificarile valide anterioare.'], $outcome->errors);
+    }
+
+    /**
+     * ANAF's description shows ids and tax codes as text, zero-padded; its test environment sends numbers.
+     */
+    public function testARecordAsAnafReallySendsItIsRead(): void
+    {
+        $this->http->respond(['stare' => 'ok', 'ExecutionStatus' => 0])->respond(['mesaje' => [[
+            'tip' => 'NOT',
+            'stare' => 'OK',
+            'uit' => self::UIT,
+            'cod_decl' => 10000001,
+            'ref_decl' => 'REF-1',
+            'post_avarie' => 'N',
+            'sursa' => 'A',
+            'id_incarcare' => 5063704760,
+            'data_creare' => '2026-10-12T08:45:02',
+            'tip_op' => 30,
+            'data_transp' => '2026-10-12T00:00:00',
+        ]], 'ExecutionStatus' => 0]);
+
+        $outcome = $this->client()->outcome('5063704760', '10000001', MessageType::Notificare);
+
+        self::assertSame(OutcomeState::Accepted, $outcome->state);
+        self::assertSame('5063704760', $outcome->listed?->idIncarcare);
+        self::assertSame('10000001', $outcome->listed->codDecl);
+        self::assertSame('2026-10-12T08:45:02+03:00', $outcome->listed->dataCreare?->format(DATE_ATOM));
     }
 
     public function testAMessageListThatCannotBeReadLeavesTheOutcomeOpen(): void

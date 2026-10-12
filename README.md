@@ -4,7 +4,7 @@
 
 PHP package for [RO e-Transport](https://etransport.mfinante.gov.ro), ANAF's system for declaring the road transport of goods in Romania.
 
-> **Status: in development.** Nothing is released yet, and the client has only been run against recorded responses, not against ANAF.
+> **Status: in development.** Nothing is released yet. Notifications and deletions have been run against ANAF's test environment; corrections, confirmations, vehicle changes and the info service have not.
 
 - **Local validation without Java.** ANAF publishes its business rules as a Schematron file that needs an XSLT 2 processor. This package evaluates the same file in plain PHP, so a declaration can be checked before it is sent.
 - **Typed messages.** Notifications, corrections, deletions, vehicle changes and confirmations built from PHP objects.
@@ -88,7 +88,7 @@ if ($outcome->isFinal()) {
 }
 ```
 
-`outcome()` asks for the status of the upload first. Once ANAF has processed the message, it reads whether the declaration is valid from the message list, where it looks for the upload by its id, then by UIT, then by your reference. ANAF answers `stareMesaj` at most 100 times a day for one upload and `lista` at most 1000 times a day, so space the calls out. `PollSchedule` says when: four checks in about the first minute, since ANAF usually answers within seconds, then less and less often, and none after a day.
+`outcome()` asks for the status of the upload first. Once ANAF has processed the message, it looks for its record in the message list: by the id of the upload, then by UIT, then by your reference. A deletion or a confirmation that went through is not listed, so it counts as accepted when the list holds no error for it; pass the message type, or `outcome()` cannot tell. ANAF answers `stareMesaj` at most 100 times a day for one upload and `lista` at most 1000 times a day, so space the calls out. `PollSchedule` says when: four checks in about the first minute, since ANAF usually answers within seconds, then less and less often, and none after a day.
 
 ```php
 use slash197\eTransport\PollSchedule;
@@ -168,6 +168,15 @@ make build    # build the PHP image
 make install  # composer install
 make check    # composer validate, PHPStan, PHPUnit
 make golden   # record again what the reference processor reports for the test cases
+```
+
+To call ANAF's test environment, copy `.env.example` to `.env` and fill in an access token and the tax code it has rights for.
+
+```sh
+make smoke                  # reads the message list of the last day; changes nothing
+make smoke a=--upload       # declares a made-up national transport and follows its outcome
+make smoke a=--upload=1     # the same, for a transport that starts tomorrow
+make smoke a=--delete=UIT   # withdraws a notification
 ```
 
 ## Licence

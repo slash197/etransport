@@ -23,8 +23,8 @@ final readonly class Status
     }
 
     /**
-     * ANAF processed the message. Whether the declaration is valid is
-     * confirmed by the message list; Client::outcome() looks it up.
+     * ANAF processed the message and found it valid. Client::outcome()
+     * also looks up its record in the message list.
      */
     public function isOk(): bool
     {

@@ -25,11 +25,12 @@
         "psr/log": "^2.0 || ^3.0"
     },
     "require-dev": {
+        "guzzlehttp/guzzle": "^7.9",
         "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^11.5"
     },
     "suggest": {
-        "guzzlehttp/guzzle": "Any PSR-18 HTTP client works"
+        "guzzlehttp/guzzle": "Any PSR-18 HTTP client works; Guzzle is the one this package is tested with"
     },
     "autoload": {
         "psr-4": {

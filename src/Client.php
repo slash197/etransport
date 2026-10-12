@@ -32,11 +32,14 @@ final class Client
     private const VERSION = 2;
     private const MAX_DAYS = 60;
 
-    /** Which type a valid record of the message list has, for the type of message that was uploaded. */
+    /**
+     * Which type a valid record of the message list has, for the type of
+     * message that was uploaded. A deletion or a confirmation that went
+     * through has no record of its own.
+     */
     private const LISTED_AS = [
         MessageType::Notificare->value => MessageType::Notificare,
         MessageType::Corectie->value => MessageType::Notificare,
-        MessageType::Stergere->value => MessageType::Stergere,
         MessageType::ModificareVehicul->value => MessageType::ModificareVehicul,
     ];
 
@@ -178,16 +181,18 @@ final class Client
     }
 
     /**
-     * Tells what became of an upload. The status service only says that
-     * ANAF processed the message; whether the declaration is valid is read
-     * from the message list, where the upload is looked for by its id, then
-     * by UIT, then by the declarant's reference.
+     * Tells what became of an upload. Once the status service says that
+     * ANAF processed the message, its record is looked for in the message
+     * list: by the id of the upload, then by UIT, then by the declarant's
+     * reference. A deletion or a confirmation that went through is not
+     * listed, so it counts as accepted when the list holds no error for it.
      *
      * Call it again later while the outcome is not final.
      *
      * @param string                  $cif          The tax code the message was uploaded for
-     * @param MessageType|null        $type         What was uploaded; keeps a deletion or vehicle change from being
-     *                                              taken for the notification that has the same UIT
+     * @param MessageType|null        $type         What was uploaded. Without it a deletion or a confirmation is never
+     *                                              reported as accepted, and a vehicle change may be taken for the
+     *                                              notification that has the same UIT
      * @param string|null             $uit          The UIT the message was about or was given at upload
      * @param \DateTimeInterface|null $uploadedAt   Limits how far back the message list is asked for
      *
@@ -217,13 +222,14 @@ final class Client
         try {
             $listed = self::find($this->messages($cif, $this->days($uploadedAt)), $idIncarcare, $type, $uit, $refDeclarant);
         } catch (ApiException) {
-            $listed = null;
+            return new Outcome(OutcomeState::Processing, $uit, [], $status);
         }
 
         return new Outcome(
             match (true) {
                 $listed?->isOk() => OutcomeState::Accepted,
                 $listed?->isError() => OutcomeState::Rejected,
+                $listed === null && in_array($type, [MessageType::Stergere, MessageType::Confirmare], true) => OutcomeState::Accepted,
                 default => OutcomeState::Processing,
             },
             $uit ?? $listed?->uit,
@@ -253,6 +259,7 @@ final class Client
             return null;
         }
         $expected = $type === null ? null : self::LISTED_AS[$type->value];
+        $messages = array_filter($messages, static fn (ListedMessage $message): bool => !$message->isError());
 
         foreach ([[$uit, 'uit'], [$refDeclarant, 'refDecl']] as [$wanted, $property]) {
             foreach ($messages as $message) {
