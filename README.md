@@ -1,6 +1,7 @@
 # eTransport
 
 [![CI](https://github.com/slash197/etransport/actions/workflows/ci.yml/badge.svg)](https://github.com/slash197/etransport/actions/workflows/ci.yml)
+[![Latest version](https://img.shields.io/packagist/v/slash197/etransport)](https://packagist.org/packages/slash197/etransport)
 
 PHP package for [RO e-Transport](https://etransport.mfinante.gov.ro), ANAF's system for declaring the road transport of goods in Romania.
 
