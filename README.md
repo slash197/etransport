@@ -156,7 +156,8 @@ The rules are written in XPath 2 and PHP only has XPath 1, so each expression is
 
 ## Requirements
 
-- PHP 8.2 or newer, with the `dom`, `libxml` and `mbstring` extensions
+- PHP 8.2 or newer, with the `dom`, `json`, `libxml` and `mbstring` extensions
+- A PSR-18 HTTP client, such as Guzzle, for the client; messages and validation need none
 
 ## Development
 
