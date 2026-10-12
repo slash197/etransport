@@ -14,7 +14,9 @@ use slash197\eTransport\Validation\Violation;
  * documents with PHP's own XPath engine. No XSLT processor is involved.
  *
  * Within a pattern a node is checked by the first rule whose context
- * matches it and by no later one, as Schematron prescribes.
+ * matches it and by no later one, as Schematron prescribes. That leaves a
+ * rule with the same context as an earlier one unreachable; unless told
+ * otherwise, such a rule is applied together with the earlier one.
  *
  * @internal
  */
@@ -34,7 +36,10 @@ final class Schema
     ) {
     }
 
-    public static function fromFile(string $file): self
+    /**
+     * @param bool $unreachable Whether to apply the rules a Schematron processor never reaches
+     */
+    public static function fromFile(string $file, bool $unreachable = true): self
     {
         $document = new \DOMDocument();
         $previous = libxml_use_internal_errors(true);
@@ -59,7 +64,7 @@ final class Schema
 
         $patterns = [];
         foreach ($children['pattern'] as $pattern) {
-            $patterns[] = self::pattern($pattern, self::lets($children['let']));
+            $patterns[] = self::pattern($pattern, self::lets($children['let']), $unreachable);
         }
 
         $schema = new self($namespaces, $patterns);
@@ -127,7 +132,7 @@ final class Schema
      *
      * @return list<Rule>
      */
-    private static function pattern(\DOMElement $pattern, array $constants): array
+    private static function pattern(\DOMElement $pattern, array $constants, bool $unreachable): array
     {
         if ($pattern->getAttribute('abstract') === 'true' || $pattern->hasAttribute('is-a')) {
             throw new UnsupportedRulesException('Abstract patterns are not supported.');
@@ -136,7 +141,8 @@ final class Schema
         $children = self::children($pattern, ['let', 'rule', 'title', 'p']);
         $translator = new Translator([...$constants, ...self::lets($children['let'])]);
 
-        $rules = [];
+        /** @var array<string, array{string, list<Assertion>}> $found Context and assertions */
+        $found = [];
         foreach ($children['rule'] as $rule) {
             if ($rule->getAttribute('abstract') === 'true') {
                 throw new UnsupportedRulesException('Abstract rules are not supported.');
@@ -158,7 +164,17 @@ final class Schema
                 $assertions[] = self::assertion($assert, $translator, $lets);
             }
 
-            $rules[] = new Rule(self::context($translator->translate($rule->getAttribute('context'))), $assertions);
+            $context = self::context($translator->translate($rule->getAttribute('context')));
+
+            // An earlier rule with the same context claims every node of this one, so its checks can only run as part of that rule.
+            $key = $unreachable ? (string) preg_replace('/\s+/', '', $context) : '#' . count($found);
+            $found[$key] ??= [$context, []];
+            $found[$key][1] = [...$found[$key][1], ...$assertions];
+        }
+
+        $rules = [];
+        foreach ($found as [$context, $assertions]) {
+            $rules[] = new Rule($context, $assertions);
         }
 
         return $rules;

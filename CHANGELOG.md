@@ -8,3 +8,4 @@ All notable changes to this package are documented here. The format follows [Kee
 
 - `Validation\Validator`, which checks a document against ANAF's XML schema and against ANAF's Schematron business rules in plain PHP, with no XSLT processor or Java. Violations carry the rule id, the location in the document and ANAF's message.
 - ANAF's schema and rules file, shipped unmodified in `resources/`.
+- `BR-003` and `BR-209`, which a Schematron processor never reaches in ANAF's file, are checked as well. `new Validator(unreachableRules: false)` turns that off.

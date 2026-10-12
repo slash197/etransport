@@ -17,10 +17,11 @@ use slash197\eTransport\Validation\Validator;
  */
 final class RulesGoldenTest extends TestCase
 {
-    /** Rules that can never be reached: an earlier rule in ANAF's file claims the same nodes. */
-    private const SHADOWED = ['BR-003', 'BR-209'];
+    /** Rules the reference never reaches: an earlier rule in ANAF's file claims the same nodes. */
+    private const UNREACHABLE = ['BR-003', 'BR-209'];
 
-    private static ?Schema $schema = null;
+    /** @var array<int, Schema> */
+    private static array $schemas = [];
 
     /**
      * @param list<array{rule: string, location: string, message: string}>|string $expected
@@ -28,7 +29,7 @@ final class RulesGoldenTest extends TestCase
     #[DataProvider('cases')]
     public function testCaseMatchesTheReferenceProcessor(string $name, string $xml, array|string $expected): void
     {
-        $actual = $this->failures($xml);
+        $actual = $this->failures($xml, unreachable: false);
 
         if (is_string($expected)) {
             self::assertArrayHasKey($name, Cases::whereTheReferenceStops());
@@ -60,18 +61,52 @@ final class RulesGoldenTest extends TestCase
 
         $rules = self::schema()->assertionIds();
         sort($rules);
-        $seen = [...array_keys($seen), ...self::SHADOWED];
+        $seen = [...array_keys($seen), ...self::UNREACHABLE];
         sort($seen);
 
         self::assertCount(61, $rules);
         self::assertSame($rules, $seen);
     }
 
-    public function testShadowedRulesAreNeverReported(): void
+    public function testUnreachableRulesAreLeftOutOnRequest(): void
     {
         foreach (Cases::all() as $xml) {
-            self::assertSame([], array_intersect(self::SHADOWED, array_column($this->failures($xml), 'rule')));
+            $rules = array_column($this->failures($xml, unreachable: false), 'rule');
+
+            self::assertSame([], array_intersect(self::UNREACHABLE, $rules));
         }
+    }
+
+    public function testUnreachableRulesAreAppliedOnTopOfTheReference(): void
+    {
+        $seen = [];
+        foreach (Cases::all() as $xml) {
+            $extra = [];
+            $rest = [];
+            foreach ($this->failures($xml) as $failure) {
+                if (in_array($failure['rule'], self::UNREACHABLE, true)) {
+                    $extra[] = $failure;
+                } else {
+                    $rest[] = $failure;
+                }
+            }
+
+            self::assertSame($this->failures($xml, unreachable: false), $rest);
+            $seen = [...$seen, ...array_column($extra, 'rule')];
+        }
+
+        self::assertEqualsCanonicalizing(self::UNREACHABLE, array_values(array_unique($seen)));
+    }
+
+    public function testAnUnreachableRuleReportsItsOwnMessage(): void
+    {
+        $failures = $this->failures(Cases::all()['BR-019 forbidden letters with right check digits']);
+
+        self::assertSame([[
+            'rule' => 'BR-003',
+            'location' => '/eTransport/stergere/@uit',
+            'message' => 'Identificatorul unic al transportului TREBUIE sa aibe un format valid (uit = OOOOOOOOOOOOOO06).',
+        ]], $failures);
     }
 
     /**
@@ -88,13 +123,13 @@ final class RulesGoldenTest extends TestCase
     /**
      * @return list<array{rule: string, location: string, message: string}>
      */
-    private function failures(string $xml): array
+    private function failures(string $xml, bool $unreachable = true): array
     {
         $document = new \DOMDocument();
         $document->loadXML($xml);
 
         $failures = [];
-        foreach (self::schema()->validate($document) as $violation) {
+        foreach (self::schema($unreachable)->validate($document) as $violation) {
             $failures[] = [
                 'rule' => (string) $violation->rule,
                 'location' => (string) $violation->location,
@@ -106,9 +141,9 @@ final class RulesGoldenTest extends TestCase
         return $failures;
     }
 
-    private static function schema(): Schema
+    private static function schema(bool $unreachable = true): Schema
     {
-        return self::$schema ??= Schema::fromFile(Validator::RULES);
+        return self::$schemas[(int) $unreachable] ??= Schema::fromFile(Validator::RULES, $unreachable);
     }
 
     /**

@@ -54,11 +54,11 @@ The rules are written in XPath 2 and PHP only has XPath 1, so each expression is
 
 ### How it is verified
 
-[`tests/Support/Cases.php`](tests/Support/Cases.php) holds about 120 made-up documents: valid ones of every message type, and at least one that breaks each rule. A reference Schematron processor, Saxon with [SchXslt](https://github.com/schxslt/schxslt), is run over them and its findings are recorded in [`tests/golden/rules.json`](tests/golden/rules.json). The tests require this package to report the same rules, at the same nodes, with the same messages. `make golden` records them again.
+[`tests/Support/Cases.php`](tests/Support/Cases.php) holds about 120 made-up documents: valid ones of every message type, and at least one that breaks each rule. A reference Schematron processor, Saxon with [SchXslt](https://github.com/schxslt/schxslt), is run over them and its findings are recorded in [`tests/golden/rules.json`](tests/golden/rules.json). The tests require this package to report the same rules, at the same nodes, with the same messages. The two rules the reference never reaches (see below) are checked on top of that. `make golden` records them again.
 
 ### What to know
 
-- **Two rules can never fail.** `BR-003` (UIT format) and `BR-209` (organiser's tax code on national transport) sit in ANAF's file behind an earlier rule for the same attribute, and Schematron applies only the first rule that matches a node. The reference processor never reports them and neither does this package. The UIT format is still checked by the schema.
+- **Two rules are applied that ANAF's file leaves unreachable.** `BR-003` (UIT format) and `BR-209` (organiser's tax code on national transport) sit behind an earlier rule for the same attribute, and Schematron applies only the first rule that matches a node, so the reference processor never reports them. They are ANAF's rules all the same, so this package checks them along with the rule they sit behind. `new Validator(unreachableRules: false)` leaves them out and reports exactly what the reference processor does.
 - **Some rules are looser than their text.** `BR-201` accepts any value containing `D`, and `BR-036` accepts thirteen digits when there is no decimal point. This is how the rules are written, and the reference processor agrees. The schema catches both.
 - **Where an XPath 2 processor would stop, this package carries on.** A number that is not a number (`cantitate="abc"`) makes an XPath 2 processor abort the whole validation with an error. Here the rule that needed the number is reported as broken. Such documents already fail the schema.
 - **It tells you what the published rules say, not what ANAF's server does.** The two should agree, but only an upload is proof.

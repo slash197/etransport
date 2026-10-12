@@ -22,10 +22,13 @@ final class Validator
     /**
      * @param string $schemaFile Path to a different version of ANAF's XSD
      * @param string $rulesFile Path to a different version of ANAF's Schematron rules
+     * @param bool $unreachableRules Whether to apply the rules that sit behind an earlier rule for the same
+     *                               nodes, which a Schematron processor never reaches (BR-003 and BR-209)
      */
     public function __construct(
         private readonly string $schemaFile = self::SCHEMA,
         private readonly string $rulesFile = self::RULES,
+        private readonly bool $unreachableRules = true,
     ) {
     }
 
@@ -40,7 +43,7 @@ final class Validator
         if (!is_file($this->schemaFile)) {
             throw new ETransportException("Schema file not found: {$this->schemaFile}");
         }
-        $this->rules ??= Schema::fromFile($this->rulesFile);
+        $this->rules ??= Schema::fromFile($this->rulesFile, $this->unreachableRules);
 
         $previous = libxml_use_internal_errors(true);
         libxml_clear_errors();

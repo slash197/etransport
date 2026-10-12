@@ -25,7 +25,7 @@ final class SchemaTest extends TestCase
 
     public function testANodeIsCheckedByTheFirstMatchingRuleOfEachPattern(): void
     {
-        $schema = $this->schema(<<<'XML'
+        $schema = $this->schema(unreachable: false, body: <<<'XML'
             <pattern>
               <rule context="@a"><assert id="first" test=". = 'x'">[first]-a is <value-of select="."/> on <name path=".."/></assert></rule>
               <rule context="//@a"><assert id="never" test="false()">never</assert></rule>
@@ -50,6 +50,28 @@ final class SchemaTest extends TestCase
             'third /doc/other third',
             'again /doc/item[1]/@a other pattern',
         ], $found);
+    }
+
+    public function testARuleBehindAnotherWithTheSameContextIsAppliedWithIt(): void
+    {
+        $schema = $this->schema(<<<'XML'
+            <pattern>
+              <rule context="item"><assert id="claims" test="true()">claims</assert></rule>
+              <rule context="@a"><assert id="first" test=". = 'x'">first</assert></rule>
+              <rule context="//@a"><assert id="behind" test=". = 'y'">behind</assert></rule>
+              <rule context="item | other"><assert id="overlaps" test="false()">overlaps</assert></rule>
+            </pattern>
+            XML);
+
+        $document = new \DOMDocument();
+        $document->loadXML('<doc><item a="z"/><other/></doc>');
+
+        $found = [];
+        foreach ($schema->validate($document) as $violation) {
+            $found[] = "{$violation->rule} {$violation->location}";
+        }
+
+        self::assertSame(['first /doc/item/@a', 'behind /doc/item/@a', 'overlaps /doc/other'], $found);
     }
 
     #[DataProvider('unsupported')]
@@ -102,10 +124,10 @@ final class SchemaTest extends TestCase
         Schema::fromFile($this->file);
     }
 
-    private function schema(string $body): Schema
+    private function schema(string $body, bool $unreachable = true): Schema
     {
         file_put_contents($this->file, "<schema xmlns=\"http://purl.oclc.org/dsdl/schematron\" queryBinding=\"xslt2\">{$body}</schema>");
 
-        return Schema::fromFile($this->file);
+        return Schema::fromFile($this->file, $unreachable);
     }
 }
