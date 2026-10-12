@@ -6,6 +6,8 @@ All notable changes to this package are documented here. The format follows [Kee
 
 ### Added
 
+- `PollSchedule`, which says when to ask for the outcome of an upload without exceeding ANAF's daily limit.
+- `Client`, for ANAF's upload, stareMesaj, lista and info services over any PSR-18 HTTP client, and `Client::outcome()`, which tells whether an uploaded message was accepted or rejected.
 - `Message`, which builds the five kinds of message (notificare, corectie, stergere, confirmare, modifVehicul) from typed objects in `Data\`, with enums for the short code lists.
 - `Validation\Validator`, which checks a document against ANAF's XML schema and against ANAF's Schematron business rules in plain PHP, with no XSLT processor or Java. Violations carry the rule id, the location in the document and ANAF's message.
 - ANAF's schema and rules file, shipped unmodified in `resources/`.

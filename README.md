@@ -4,11 +4,11 @@
 
 PHP package for [RO e-Transport](https://etransport.mfinante.gov.ro), ANAF's system for declaring the road transport of goods in Romania.
 
-> **Status: in development.** Nothing is released yet. Messages and validation work; the client is not written.
+> **Status: in development.** Nothing is released yet, and the client has only been run against recorded responses, not against ANAF.
 
 - **Local validation without Java.** ANAF publishes its business rules as a Schematron file that needs an XSLT 2 processor. This package evaluates the same file in plain PHP, so a declaration can be checked before it is sent.
 - **Typed messages.** Notifications, corrections, deletions, vehicle changes and confirmations built from PHP objects.
-- **A client for the web services** (planned). Upload, message status, message list and transporter info, over any PSR-18 HTTP client.
+- **A client for the web services.** Upload, message status, message list and transporter info, over any PSR-18 HTTP client.
 
 It does not obtain ANAF OAuth tokens; it takes one you already have.
 
@@ -54,6 +54,54 @@ Every one also takes `refDeclarant`, your own reference for the message, and `de
 Properties are named as in ANAF's schema, so its field specification applies directly. The short code lists are enums (`TipOperatiune`, `ScopOperatiune`, `TipDocument`, `TipConfirmare`, `Judet`), and a plain number is accepted wherever one is, in case ANAF adds a code. `Judet::tryFromCode('CJ')` finds a county by its abbreviation. Border crossing points and customs offices are numbers from ANAF's lists; countries and units of measure are their usual codes.
 
 A message is not checked when it is built. Pass it to the validator before sending it.
+
+## Client
+
+```php
+use slash197\eTransport\Client;
+use slash197\eTransport\Environment;
+
+$client = new Client($httpClient, $accessToken, Environment::Test);
+
+$upload = $client->upload($message);
+```
+
+`$httpClient` is any PSR-18 client, such as Guzzle. The token is an ANAF OAuth access token, or a function that returns the current one; getting and refreshing it is not part of this package.
+
+| Method | ANAF service | Returns |
+|---|---|---|
+| `upload($message)` | `upload` | `Upload`: the upload id and, for a notification, the UIT |
+| `status($upload)` | `stareMesaj` | `Status`: `isOk()`, `isProcessing()`, `isRejected()`, `errors` |
+| `messages($cif, $days)` | `lista` | A list of `ListedMessage` |
+| `info($cuiOp)` | `info` | A list of `TransportInfo`, for transport organisers |
+| `outcome($upload, $cif)` | `stareMesaj`, then `lista` | `Outcome`: accepted, rejected or still processing |
+
+An upload only confirms that ANAF received the message. ANAF processes it afterwards, so ask for the outcome a little later, and again while it is not final:
+
+```php
+use slash197\eTransport\MessageType;
+
+$outcome = $client->outcome($upload->idIncarcare, '10000001', MessageType::Notificare, $upload->uit);
+
+if ($outcome->isFinal()) {
+    echo $outcome->state->value, ' ', $outcome->uit, ' ', implode(' | ', $outcome->errors);
+}
+```
+
+`outcome()` asks for the status of the upload first. Once ANAF has processed the message, it reads whether the declaration is valid from the message list, where it looks for the upload by its id, then by UIT, then by your reference. ANAF answers `stareMesaj` at most 100 times a day for one upload and `lista` at most 1000 times a day, so space the calls out. `PollSchedule` says when: four checks in about the first minute, since ANAF usually answers within seconds, then less and less often, and none after a day.
+
+```php
+use slash197\eTransport\PollSchedule;
+
+$schedule = new PollSchedule();
+
+$schedule->nextCheck($uploadedAt, $checksMade);                  // when the next check is due; null to give up
+$schedule->isDue($uploadedAt, $checksMade, new DateTimeImmutable());
+```
+
+It only does the arithmetic. Remembering the upload and running the checks, in a queue job or a cron script, is yours.
+
+A call that ANAF does not answer as expected throws `ApiException`, which carries the HTTP status, ANAF's error texts and its `trace_id`; `isRetryable()` tells a transient failure from one that will fail again. A message that ANAF received and then rejected is not an exception: it is a rejected status or outcome.
 
 ## Validation
 
