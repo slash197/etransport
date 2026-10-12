@@ -26,8 +26,8 @@ check: validate stan test
 golden:
 	docker compose --profile oracle run --rm oracle php bin/golden.php
 
-# Calls ANAF's test environment; needs .env (see .env.example). make smoke reads only;
-# make smoke a=--upload (or --upload=1, starting tomorrow) declares a made-up transport, make smoke a=--delete=UIT withdraws one
+# Calls ANAF's test environment; needs .env (see .env.example). make smoke reads the message list only;
+# make smoke a=--upload declares a made-up transport. The other options are at the top of bin/smoke.php.
 smoke:
 	$(RUN) php bin/smoke.php $(a)
 

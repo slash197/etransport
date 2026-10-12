@@ -421,6 +421,19 @@ final class ClientTest extends TestCase
         yield 'confirmation' => [MessageType::Confirmare];
     }
 
+    public function testAConfirmationIsFoundInTheRecordOfItsNotification(): void
+    {
+        $list = self::list();
+        $list['mesaje'][0]['confirmare'] = ['tip_conf' => 10, 'obs' => 'Receptie', 'data_decl' => '2026-10-12T08:59:03', 'id_incarcare' => 5062319823];
+        $this->http->respond(['stare' => 'ok', 'ExecutionStatus' => 0])->respond($list);
+
+        $outcome = $this->client()->outcome('5062319823', '10000001', MessageType::Confirmare);
+
+        self::assertSame(OutcomeState::Accepted, $outcome->state);
+        self::assertSame(MessageType::Notificare, $outcome->listed?->tip);
+        self::assertSame(self::UIT, $outcome->uit);
+    }
+
     public function testADeletionWithErrorsInTheListIsRejected(): void
     {
         $this->http->respond(['stare' => 'ok', 'ExecutionStatus' => 0])->respond(self::list());

@@ -4,7 +4,7 @@
 
 PHP package for [RO e-Transport](https://etransport.mfinante.gov.ro), ANAF's system for declaring the road transport of goods in Romania.
 
-> **Status: in development.** Nothing is released yet. Notifications and deletions have been run against ANAF's test environment; corrections, confirmations, vehicle changes and the info service have not.
+> **Status: in development.** Nothing is released yet. Every message type and every service has been run against ANAF's test environment, for a national transport.
 
 - **Local validation without Java.** ANAF publishes its business rules as a Schematron file that needs an XSLT 2 processor. This package evaluates the same file in plain PHP, so a declaration can be checked before it is sent.
 - **Typed messages.** Notifications, corrections, deletions, vehicle changes and confirmations built from PHP objects.
@@ -76,7 +76,7 @@ $upload = $client->upload($message);
 | `info($cuiOp)` | `info` | A list of `TransportInfo`, for transport organisers |
 | `outcome($upload, $cif)` | `stareMesaj`, then `lista` | `Outcome`: accepted, rejected or still processing |
 
-An upload only confirms that ANAF received the message. ANAF processes it afterwards, so ask for the outcome a little later, and again while it is not final:
+An upload only confirms that ANAF received the message. ANAF processes it afterwards, usually within a minute, so ask for the outcome a little later, and again while it is not final:
 
 ```php
 use slash197\eTransport\MessageType;
@@ -88,7 +88,7 @@ if ($outcome->isFinal()) {
 }
 ```
 
-`outcome()` asks for the status of the upload first. Once ANAF has processed the message, it looks for its record in the message list: by the id of the upload, then by UIT, then by your reference. A deletion or a confirmation that went through is not listed, so it counts as accepted when the list holds no error for it; pass the message type, or `outcome()` cannot tell. ANAF answers `stareMesaj` at most 100 times a day for one upload and `lista` at most 1000 times a day, so space the calls out. `PollSchedule` says when: four checks in about the first minute, since ANAF usually answers within seconds, then less and less often, and none after a day.
+`outcome()` asks for the status of the upload first. Once ANAF has processed the message, it looks for its record in the message list: by the id of the upload, then by UIT, then by your reference. A deletion that went through is not listed, and a confirmation only as part of its notification, so they count as accepted when the list holds no error for them; pass the message type, or `outcome()` cannot tell. ANAF answers `stareMesaj` at most 100 times a day for one upload and `lista` at most 1000 times a day, so space the calls out. `PollSchedule` says when: four checks in about the first minute, since ANAF usually answers within seconds, then less and less often, and none after a day.
 
 ```php
 use slash197\eTransport\PollSchedule;
@@ -178,6 +178,8 @@ make smoke a=--upload       # declares a made-up national transport and follows 
 make smoke a=--upload=1     # the same, for a transport that starts tomorrow
 make smoke a=--delete=UIT   # withdraws a notification
 ```
+
+The options for a correction, a vehicle change, a confirmation and the info service are listed at the top of `bin/smoke.php`.
 
 ## Licence
 

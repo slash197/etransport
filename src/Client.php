@@ -184,8 +184,9 @@ final class Client
      * Tells what became of an upload. Once the status service says that
      * ANAF processed the message, its record is looked for in the message
      * list: by the id of the upload, then by UIT, then by the declarant's
-     * reference. A deletion or a confirmation that went through is not
-     * listed, so it counts as accepted when the list holds no error for it.
+     * reference. A deletion that went through is not listed and a
+     * confirmation only as part of its notification, so they count as
+     * accepted when the list holds no error for them.
      *
      * Call it again later while the outcome is not final.
      *
@@ -250,6 +251,14 @@ final class Client
 
         foreach ($messages as $message) {
             if ($message->idIncarcare !== null && ltrim($message->idIncarcare, '0') === $id) {
+                return $message;
+            }
+        }
+
+        // A confirmation that went through is part of the record of its notification.
+        foreach ($messages as $message) {
+            $confirmation = $message->raw['confirmare'] ?? null;
+            if (is_array($confirmation) && ltrim(Json::string($confirmation, 'id_incarcare') ?? '', '0') === $id) {
                 return $message;
             }
         }

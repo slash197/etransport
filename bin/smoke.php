@@ -9,7 +9,11 @@ declare(strict_types=1);
  *   php bin/smoke.php                 reads the message list of the last day; changes nothing
  *   php bin/smoke.php --upload        declares a made-up national transport and follows its outcome
  *   php bin/smoke.php --upload=1      the same, for a transport that starts in so many days
- *   php bin/smoke.php --delete=UIT    withdraws a notification and follows the outcome
+ *   php bin/smoke.php --correct=UIT   replaces a notification with one of another quantity; --days=1 as at upload
+ *   php bin/smoke.php --vehicle=UIT   changes the vehicle of a notification
+ *   php bin/smoke.php --confirm=UIT   confirms that the goods of a notification were received
+ *   php bin/smoke.php --delete=UIT    withdraws a notification
+ *   php bin/smoke.php --info          lists the transports the tax code organises
  *
  * What ANAF answers is printed in full, since it describes the tax code's
  * own transports. The token is never printed.
@@ -26,6 +30,7 @@ use slash197\eTransport\Data\LocTraseuRutier;
 use slash197\eTransport\Data\Notificare;
 use slash197\eTransport\Data\PartenerComercial;
 use slash197\eTransport\Data\ScopOperatiune;
+use slash197\eTransport\Data\TipConfirmare;
 use slash197\eTransport\Data\TipDocument;
 use slash197\eTransport\Data\TipOperatiune;
 use slash197\eTransport\Environment;
@@ -45,25 +50,41 @@ if ($token === '' || $cif === '') {
 
 $client = new Client(new Guzzle(['timeout' => 60]), $token, Environment::Test);
 $json = static fn (mixed $value): string => (string) json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-$options = getopt('', ['upload::', 'delete:']);
+$options = getopt('', ['upload::', 'days:', 'correct:', 'vehicle:', 'confirm:', 'delete:', 'info']);
 
 try {
-    $message = null;
-    if (isset($options['upload'])) {
-        $today = new DateTimeImmutable('now', new DateTimeZone('Europe/Bucharest'));
-        $start = $today->modify('+' . (int) $options['upload'] . ' days');
-        $message = Message::notificare($cif, new Notificare(
-            TipOperatiune::TransportNational,
-            [new BunuriTransportate(ScopOperatiune::Comercializare, 'Mobilier din lemn (test)', 12.5, 'H87', 510.25, codTarifar: '94036010', greutateNeta: 480, valoareLeiFaraTva: 18250)],
-            new PartenerComercial('RO', 'Partener Exemplu SRL', $cif),
-            new DateTransport('B100ABC', 'RO', 'Transportator Exemplu SRL', $start, codOrgTransport: $cif),
-            LocTraseuRutier::locatie(new Locatie(Judet::Cluj, 'Cluj-Napoca', 'Strada Exemplu', '1')),
-            LocTraseuRutier::locatie(new Locatie(Judet::Bucuresti, 'Bucuresti', 'Bulevardul Exemplu', '2')),
-            [new DocumentTransport(TipDocument::AvizDeInsotire, $today, 'TEST-1')],
-        ), refDeclarant: 'SMOKE-' . $today->format('YmdHis'));
-    } elseif (is_string($options['delete'] ?? null)) {
-        $message = Message::stergere($cif, $options['delete']);
+    $today = new DateTimeImmutable('now', new DateTimeZone('Europe/Bucharest'));
+    $days = (int) ($options['upload'] ?? $options['days'] ?? 0);
+    $notification = static fn (float $quantity): Notificare => new Notificare(
+        TipOperatiune::TransportNational,
+        [new BunuriTransportate(ScopOperatiune::Comercializare, 'Mobilier din lemn (test)', $quantity, 'H87', 510.25, codTarifar: '94036010', greutateNeta: 480, valoareLeiFaraTva: 18250)],
+        new PartenerComercial('RO', 'Partener Exemplu SRL', $cif),
+        new DateTransport('B100ABC', 'RO', 'Transportator Exemplu SRL', $today->modify("+{$days} days"), codOrgTransport: $cif),
+        LocTraseuRutier::locatie(new Locatie(Judet::Cluj, 'Cluj-Napoca', 'Strada Exemplu', '1')),
+        LocTraseuRutier::locatie(new Locatie(Judet::Bucuresti, 'Bucuresti', 'Bulevardul Exemplu', '2')),
+        [new DocumentTransport(TipDocument::AvizDeInsotire, $today, 'TEST-1')],
+    );
+    $reference = 'SMOKE-' . $today->format('YmdHis');
+    $uit = static fn (string $option): ?string => is_string($options[$option] ?? null) ? $options[$option] : null;
+
+    if (isset($options['info'])) {
+        $transports = $client->info($cif);
+        echo 'Transports organised: ', count($transports), "\n";
+        foreach ($transports as $transport) {
+            echo $json($transport->raw), "\n";
+        }
+
+        exit(0);
     }
+
+    $message = match (true) {
+        isset($options['upload']) => Message::notificare($cif, $notification(12.5), $reference),
+        $uit('correct') !== null => Message::corectie($cif, $uit('correct'), $notification(14), $reference),
+        $uit('vehicle') !== null => Message::modifVehicul($cif, $uit('vehicle'), 'B300ABC', $today, 'B400ABC', observatii: 'Defectiune (test)', refDeclarant: $reference),
+        $uit('confirm') !== null => Message::confirmare($cif, $uit('confirm'), TipConfirmare::Confirmat, 'Receptie (test)', $reference),
+        $uit('delete') !== null => Message::stergere($cif, $uit('delete')),
+        default => null,
+    };
 
     if ($message === null) {
         $messages = $client->messages($cif, 1);
@@ -82,9 +103,9 @@ try {
     $uploadedAt = new DateTimeImmutable();
     echo 'Upload: ', $json($upload->raw), "\n";
 
-    // Only the burst of the first minute or so; run the script again with nothing to see the list later.
+    // Only the first two minutes or so; run the script again with nothing to see the list later.
     $schedule = new PollSchedule();
-    for ($checks = 0; $checks < 4; $checks++) {
+    for ($checks = 0; $checks < 5; $checks++) {
         $next = $schedule->nextCheck($uploadedAt, $checks);
         if ($next === null) {
             break;
